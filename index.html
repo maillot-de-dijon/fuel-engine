@@ -15,131 +15,219 @@
         body {
             background-color: #000000;
             color: #FFFFFF;
-            padding: 20px;
+            padding: 16px 16px 90px 16px;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            justify-content: space-between;
         }
         header {
-            text-align: center;
-            font-size: 11px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
             letter-spacing: 2px;
             color: #888888;
             text-transform: uppercase;
-            padding-top: 10px;
+            margin-bottom: 24px;
+            padding-top: 8px;
         }
-        .main-card {
-            background-color: #0A0A0A;
-            border: 1px solid #1A1A1A;
+        header span {
+            color: #00E676;
+            font-weight: 700;
+        }
+
+        /* Rings Section */
+        .rings-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .ring-card {
+            background-color: #111418;
+            border: 1px solid #1E232A;
             border-radius: 16px;
-            padding: 24px;
-            margin: auto 0;
+            flex: 1;
+            padding: 14px 8px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .calories-label {
+        .ring-wrapper {
+            position: relative;
+            width: 65px;
+            height: 65px;
+            margin-bottom: 10px;
+        }
+        .ring-wrapper svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+        .ring-wrapper circle {
+            fill: none;
+            stroke-width: 5;
+        }
+        .ring-bg { stroke: #222B35; }
+        .ring-fill { stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+        
+        .ring-content {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .ring-label {
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: #888888;
+            text-transform: uppercase;
+        }
+
+        /* Cards */
+        .whoop-card {
+            background-color: #111418;
+            border: 1px solid #1E232A;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-title {
             font-size: 11px;
             letter-spacing: 1.5px;
             color: #888888;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
-        .calories-value {
-            font-size: 42px;
+        .card-value {
+            font-size: 24px;
             font-weight: 700;
-            margin-bottom: 24px;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
         }
-        .macro-item {
-            background-color: #121212;
-            border: 1px solid #222222;
-            border-radius: 12px;
-            padding: 14px 16px;
-            margin-bottom: 12px;
+        .card-value span {
+            font-size: 14px;
+            color: #888888;
+            font-weight: 400;
         }
-        .macro-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            color: #AAAAAA;
-        }
-        .macro-bar-bg {
-            background-color: #222222;
-            height: 6px;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        .macro-bar-fill {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 0.4s ease;
-        }
-        .fill-prot { background-color: #0066FF; }
-        .fill-carbs { background-color: #00E676; }
-        .fill-fats { background-color: #FF3D00; }
-        
+
+        /* Action Button */
         .btn-scan {
             background-color: #00E676;
             color: #000000;
             border: none;
             width: 100%;
-            padding: 18px;
+            padding: 16px;
             border-radius: 14px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
             cursor: pointer;
-            box-shadow: 0 0 20px rgba(0, 230, 118, 0.2);
+            box-shadow: 0 0 20px rgba(0, 230, 118, 0.15);
+            margin-top: 10px;
+        }
+
+        /* Bottom Nav Bar */
+        nav {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            background-color: #0A0D10;
+            border-top: 1px solid #1A2129;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 24px 0;
+            z-index: 100;
+        }
+        .nav-item {
+            text-align: center;
+            color: #666D78;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+        .nav-item.active {
+            color: #00E676;
         }
     </style>
 </head>
 <body>
-    <header>Fuel Engine</header>
 
-    <div class="main-card">
-        <div class="calories-label">Calories restantes</div>
-        <div class="calories-value" id="cal-val">1,850</div>
+    <header>
+        <div>Fuel Engine</div>
+        <span id="streak-badge">11 %</span>
+    </header>
 
-        <div class="macro-item">
-            <div class="macro-header">
-                <span>Protéines</span>
-                <span id="prot-text">142 / 180 g</span>
+    <!-- Anneaux de progression (Style Whoop) -->
+    <div class="rings-container">
+        <!-- Protéines -->
+        <div class="ring-card">
+            <div class="ring-wrapper">
+                <svg viewBox="0 0 36 36">
+                    <circle class="ring-bg" cx="18" cy="18" r="15.9155"></circle>
+                    <circle class="ring-fill" id="prot-circle" cx="18" cy="18" r="15.9155" stroke="#0066FF" stroke-dasharray="100" stroke-dashoffset="30"></circle>
+                </svg>
+                <div class="ring-content" id="prot-pct">78%</div>
             </div>
-            <div class="macro-bar-bg">
-                <div class="macro-bar-fill fill-prot" id="prot-bar" style="width: 78%;"></div>
-            </div>
+            <div class="ring-label">Protéines</div>
         </div>
 
-        <div class="macro-item">
-            <div class="macro-header">
-                <span>Glucides</span>
-                <span id="carbs-text">210 / 250 g</span>
+        <!-- Glucides -->
+        <div class="ring-card">
+            <div class="ring-wrapper">
+                <svg viewBox="0 0 36 36">
+                    <circle class="ring-bg" cx="18" cy="18" r="15.9155"></circle>
+                    <circle class="ring-fill" id="carbs-circle" cx="18" cy="18" r="15.9155" stroke="#00E676" stroke-dasharray="100" stroke-dashoffset="20"></circle>
+                </svg>
+                <div class="ring-content" id="carbs-pct">84%</div>
             </div>
-            <div class="macro-bar-bg">
-                <div class="macro-bar-fill fill-carbs" id="carbs-bar" style="width: 84%;"></div>
-            </div>
+            <div class="ring-label">Glucides</div>
         </div>
 
-        <div class="macro-item">
-            <div class="macro-header">
-                <span>Lipides</span>
-                <span id="fats-text">55 / 70 g</span>
+        <!-- Lipides -->
+        <div class="ring-card">
+            <div class="ring-wrapper">
+                <svg viewBox="0 0 36 36">
+                    <circle class="ring-bg" cx="18" cy="18" r="15.9155"></circle>
+                    <circle class="ring-fill" id="fats-circle" cx="18" cy="18" r="15.9155" stroke="#FF3D00" stroke-dasharray="100" stroke-dashoffset="25"></circle>
+                </svg>
+                <div class="ring-content" id="fats-pct">78%</div>
             </div>
-            <div class="macro-bar-bg">
-                <div class="macro-bar-fill fill-fats" id="fats-bar" style="width: 78%;"></div>
-            </div>
+            <div class="ring-label">Lipides</div>
         </div>
     </div>
 
+    <!-- Bloc Calories Restantes -->
+    <div class="whoop-card">
+        <div>
+            <div class="card-title">Calories restantes</div>
+            <div class="card-value" id="cal-val">1,850 <span>kcal</span></div>
+        </div>
+    </div>
+
+    <!-- Bouton d'action -->
     <button class="btn-scan" id="scan-btn">Ajouter un repas</button>
 
+    <!-- Barre de navigation basse -->
+    <nav>
+        <a href="#" class="nav-item active">Accueil</a>
+        <a href="#" class="nav-item">Macros</a>
+        <a href="#" class="nav-item">Journal</a>
+        <a href="#" class="nav-item">Profil</a>
+    </nav>
+
     <script>
-        let data = JSON.parse(localStorage.getItem('fuel_data')) || {
+        let data = JSON.parse(localStorage.getItem('fuel_data_v2')) || {
             calories: 1850,
-            prot: 142,
+            prot: 140,
             carbs: 210,
             fats: 55
         };
@@ -147,25 +235,31 @@
         const targets = { prot: 180, carbs: 250, fats: 70 };
 
         function updateUI() {
-            document.getElementById('cal-val').innerText = data.calories.toLocaleString();
-            document.getElementById('prot-text').innerText = `${data.prot} / ${targets.prot} g`;
-            document.getElementById('carbs-text').innerText = `${data.carbs} / ${targets.carbs} g`;
-            document.getElementById('fats-text').innerText = `${data.fats} / ${targets.fats} g`;
+            document.getElementById('cal-val').innerHTML = `${data.calories.toLocaleString()} <span>kcal</span>`;
 
-            document.getElementById('prot-bar').style.width = Math.min(100, (data.prot / targets.prot) * 100) + '%';
-            document.getElementById('carbs-bar').style.width = Math.min(100, (data.carbs / targets.carbs) * 100) + '%';
-            document.getElementById('fats-bar').style.width = Math.min(100, (data.fats / targets.fats) * 100) + '%';
+            // Calcul des pourcentages pour les cercles (dashoffset va de 100 à 0)
+            let protPct = Math.min(100, Math.round((data.prot / targets.prot) * 100));
+            let carbsPct = Math.min(100, Math.round((data.carbs / targets.carbs) * 100));
+            let fatsPct = Math.min(100, Math.round((data.fats / targets.fats) * 100));
 
-            localStorage.setItem('fuel_data', JSON.stringify(data));
+            document.getElementById('prot-pct').innerText = protPct + '%';
+            document.getElementById('carbs-pct').innerText = carbsPct + '%';
+            document.getElementById('fats-pct').innerText = fatsPct + '%';
+
+            document.getElementById('prot-circle').style.strokeDashoffset = 100 - protPct;
+            document.getElementById('carbs-circle').style.strokeDashoffset = 100 - carbsPct;
+            document.getElementById('fats-circle').style.strokeDashoffset = 100 - fatsPct;
+
+            localStorage.setItem('fuel_data_v2', JSON.stringify(data));
         }
 
         document.getElementById('scan-btn').addEventListener('click', () => {
-            let addedCal = prompt("Calories à ajouter :", "500");
+            let addedCal = prompt("Calories consommées :", "500");
             if (addedCal !== null) {
                 data.calories -= parseInt(addedCal || 0);
                 data.prot += 30;
-                data.carbs += 40;
-                data.fats += 15;
+                data.carbs += 45;
+                data.fats += 12;
                 updateUI();
             }
         });
