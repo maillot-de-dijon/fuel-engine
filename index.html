@@ -10,6 +10,7 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         body {
             background-color: #000000;
@@ -17,125 +18,160 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            min-height: 100vh;
             justify-content: space-between;
         }
         header {
             text-align: center;
-            font-size: 12px;
+            font-size: 11px;
             letter-spacing: 2px;
-            color: #8E8E93;
-            font-weight: bold;
+            color: #888888;
+            text-transform: uppercase;
             padding-top: 10px;
         }
-        .main-calories {
-            margin-top: 20px;
+        .main-card {
+            background-color: #0A0A0A;
+            border: 1px solid #1A1A1A;
+            border-radius: 16px;
+            padding: 24px;
+            margin: auto 0;
         }
-        .label {
+        .calories-label {
             font-size: 11px;
-            color: #8E8E93;
             letter-spacing: 1.5px;
-            margin-bottom: 5px;
+            color: #888888;
+            text-transform: uppercase;
+            margin-bottom: 8px;
         }
         .calories-value {
-            font-size: 52px;
-            font-weight: 800;
-            color: #FFFFFF;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
         }
-        .macros-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .macro-card {
+        .macro-item {
             background-color: #121212;
-            border: 1px solid #1A1A1A;
+            border: 1px solid #222222;
             border-radius: 12px;
-            padding: 14px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
         }
         .macro-header {
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
-            font-weight: bold;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
             margin-bottom: 8px;
-            color: #8E8E93;
-            letter-spacing: 1px;
+            color: #AAAAAA;
         }
-        .macro-value {
-            color: #FFFFFF;
-        }
-        .progress-bar {
-            width: 100%;
+        .macro-bar-bg {
+            background-color: #222222;
             height: 6px;
-            background-color: #1A1A1A;
             border-radius: 3px;
             overflow: hidden;
         }
-        .progress-fill {
+        .macro-bar-fill {
             height: 100%;
             border-radius: 3px;
+            transition: width 0.4s ease;
         }
+        .fill-prot { background-color: #0066FF; }
+        .fill-carbs { background-color: #00E676; }
+        .fill-fats { background-color: #FF3D00; }
+        
         .btn-scan {
-            width: 100%;
             background-color: #00E676;
             color: #000000;
             border: none;
-            border-radius: 12px;
+            width: 100%;
             padding: 18px;
-            font-size: 15px;
-            font-weight: bold;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
             letter-spacing: 1px;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(0, 230, 118, 0.3);
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 230, 118, 0.2);
         }
     </style>
 </head>
 <body>
+    <header>Fuel Engine</header>
 
-    <header>FUEL ENGINE</header>
+    <div class="main-card">
+        <div class="calories-label">Calories restantes</div>
+        <div class="calories-value" id="cal-val">1,850</div>
 
-    <div class="main-calories">
-        <div class="label">CALORIES RESTANTES</div>
-        <div class="calories-value">1,850</div>
-    </div>
-
-    <div class="macros-container">
-        <!-- Protéines -->
-        <div class="macro-card">
+        <div class="macro-item">
             <div class="macro-header">
-                <span>PROTÉINES</span>
-                <span class="macro-value">142 / 180 g</span>
+                <span>Protéines</span>
+                <span id="prot-text">142 / 180 g</span>
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 78%; background-color: #0055FF;"></div>
+            <div class="macro-bar-bg">
+                <div class="macro-bar-fill fill-prot" id="prot-bar" style="width: 78%;"></div>
             </div>
         </div>
-        <!-- Glucides -->
-        <div class="macro-card">
+
+        <div class="macro-item">
             <div class="macro-header">
-                <span>GLUCIDES</span>
-                <span class="macro-value">210 / 250 g</span>
+                <span>Glucides</span>
+                <span id="carbs-text">210 / 250 g</span>
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 84%; background-color: #00E676;"></div>
+            <div class="macro-bar-bg">
+                <div class="macro-bar-fill fill-carbs" id="carbs-bar" style="width: 84%;"></div>
             </div>
         </div>
-        <!-- Lipides -->
-        <div class="macro-card">
+
+        <div class="macro-item">
             <div class="macro-header">
-                <span>LIPIDES</span>
-                <span class="macro-value">55 / 70 g</span>
+                <span>Lipides</span>
+                <span id="fats-text">55 / 70 g</span>
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 75%; background-color: #FF3B30;"></div>
+            <div class="macro-bar-bg">
+                <div class="macro-bar-fill fill-fats" id="fats-bar" style="width: 78%;"></div>
             </div>
         </div>
     </div>
 
-    <button class="btn-scan" onclick="alert('Ouverture de la caméra et de l IA...')">SCANNER UN REPAS</button>
+    <button class="btn-scan" id="scan-btn">Ajouter un repas</button>
 
+    <script>
+        // État de l'application (sauvegardé en localStorage)
+        let data = JSON.parse(localStorage.getItem('fuel_data')) || {
+            calories: 1850,
+            prot: 142,
+            carbs: 210,
+            fats: 55
+        };
+
+        const targets = { prot: 180, carbs: 250, fats: 70, calMax: 2200 };
+
+        function updateUI() {
+            document.getElementById('cal-val').innerText = data.calories.toLocaleString();
+            document.getElementById('prot-text').innerText = `${data.prot} / ${targets.prot} g`;
+            document.getElementById('carbs-text').innerText = `${data.carbs} / ${targets.carbs} g`;
+            document.getElementById('fats-text').innerText = `${data.fats} / ${targets.fats} g`;
+
+            document.getElementById('prot-bar').style.width = Math.min(100, (data.prot / targets.prot) * 100) + '%';
+            document.getElementById('carbs-bar').style.width = Math.min(100, (data.carbs / targets.carbs) * 100) + '%';
+            document.getElementById('fats-bar').style.width = Math.min(100, (data.fats / targets.fats) * 100) + '%';
+
+            localStorage.setItem('fuel_data', JSON.stringify(data));
+        }
+
+        document.getElementById('scan-btn').addEventListener('click', () => {
+            let addedCal = prompt("Calories à ajouter :", "500");
+            if (addedCal !== null) {
+                data.calories -= parseInt(addedCal || 0);
+                data.prot += 30; // Exemple d'ajout par défaut
+                data.carbs += 40;
+                data.fats += 15;
+                updateUI();
+            }
+        });
+
+        updateUI();
+    </script>
 </body>
 </html>
