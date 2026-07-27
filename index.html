@@ -33,7 +33,7 @@
             flex-direction: column;
         }
 
-        /* En-tête Global */
+        /* Top Bar */
         .top-nav {
             display: flex;
             justify-content: space-between;
@@ -63,20 +63,82 @@
             font-size: 12px; color: var(--text-muted);
         }
 
-        /* --- SYSTÈME DE VUES (SPA) --- */
+        .brand-title {
+            text-align: center;
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        /* SPA Views */
         .view-section {
-            display: none; /* Caché par défaut */
-            animation: fadeIn 0.4s ease;
+            display: none;
+            animation: fadeIn 0.3s ease;
         }
         .view-section.active {
-            display: block; /* Affiché si actif */
+            display: block;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Composants de base (Cartes, Boutons) */
+        /* Rings Grid */
+        .rings-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .ring-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 16px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .ring-svg-wrap {
+            position: relative;
+            width: 68px;
+            height: 68px;
+            margin-bottom: 10px;
+        }
+        .ring-svg-wrap svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+        .ring-svg-wrap circle {
+            fill: none;
+            stroke-width: 5.5;
+        }
+        .bg-track { stroke: #1C222D; }
+        .progress-track { stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+        
+        .ring-inner-text {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .ring-title {
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* Modules */
         .whoop-module {
             background-color: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -100,57 +162,58 @@
             margin-top: 12px; display: block; text-align: center;
         }
 
-        /* Composants Photo/Input natifs */
-        .camera-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            border: 2px dashed var(--card-border);
-            border-radius: 18px;
-            margin-top: 20px;
-        }
-        .camera-wrapper label {
-            background-color: var(--card-bg);
-            color: var(--accent-green);
-            padding: 12px 24px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            border: 1px solid var(--accent-green);
-        }
-        input[type="file"], input[type="text"] {
-            display: none; /* On cache le bouton moche par défaut */
-        }
-        .textarea-custom {
-            width: 100%;
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            color: var(--text-main);
-            padding: 16px;
-            border-radius: 12px;
-            min-height: 100px;
-            margin-top: 20px;
-            font-size: 14px;
-            resize: none;
-            outline: none;
+        .secondary-btn {
+            background-color: transparent; color: var(--accent-orange);
+            border: 1px solid #361711; width: 100%; padding: 14px;
+            border-radius: 16px; font-size: 11px; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
+            margin-top: 10px;
         }
 
-        /* Navigation Basse */
+        /* Journal & Camera UI */
+        .camera-wrapper {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; padding: 30px 20px;
+            border: 2px dashed var(--card-border); border-radius: 18px;
+            margin-bottom: 16px; text-align: center;
+        }
+        .camera-wrapper label {
+            background-color: var(--accent-green); color: #000;
+            padding: 14px 24px; border-radius: 14px; font-size: 12px;
+            font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; display: inline-block;
+        }
+        input[type="file"] { display: none; }
+        
+        .preview-img {
+            width: 100%; max-height: 200px; object-fit: cover;
+            border-radius: 12px; margin-bottom: 14px; display: none;
+        }
+        
+        .status-loading {
+            text-align: center; color: var(--accent-green); font-size: 12px;
+            font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            margin-top: 10px; display: none;
+        }
+
+        /* Inputs */
+        .input-text {
+            width: 100%; background-color: #0A0D12; border: 1px solid var(--card-border);
+            border-radius: 12px; padding: 14px; color: #FFF; font-size: 15px; outline: none;
+            margin-top: 8px;
+        }
+
+        /* Bottom Nav */
         nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background-color: #0A0C10; border-top: 1px solid #1A212D;
             display: flex; justify-content: space-around;
-            padding: 16px 0 24px 0; z-index: 100;
+            padding: 14px 0 24px 0; z-index: 100;
         }
         .nav-link {
             text-align: center; color: #555E6D; font-size: 9px;
             letter-spacing: 1px; text-transform: uppercase; font-weight: 700;
-            display: flex; flex-direction: column; gap: 4px; align-items: center;
+            cursor: pointer;
         }
         .nav-link.active { color: var(--accent-green); }
     </style>
@@ -163,86 +226,224 @@
         <div class="profile-icon">⚡</div>
     </div>
 
+    <div class="brand-title">Fuel Engine AI</div>
+
     <!-- VUE 1 : ACCUEIL -->
     <div id="view-accueil" class="view-section active">
-        <div class="whoop-module" style="text-align: center;">
-            <div class="module-label">Score de Nutrition</div>
-            <div class="module-data" style="color: var(--accent-green);">85 <span>%</span></div>
+        <div class="rings-grid">
+            <div class="ring-box">
+                <div class="ring-svg-wrap">
+                    <svg viewBox="0 0 36 36">
+                        <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
+                        <circle class="progress-track" id="prot-circle" cx="18" cy="18" r="15.9155" stroke="#0066FF" stroke-dasharray="100" stroke-dashoffset="100"></circle>
+                    </svg>
+                    <div class="ring-inner-text" id="prot-val">0g</div>
+                </div>
+                <div class="ring-title">Protéines</div>
+            </div>
+
+            <div class="ring-box">
+                <div class="ring-svg-wrap">
+                    <svg viewBox="0 0 36 36">
+                        <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
+                        <circle class="progress-track" id="carbs-circle" cx="18" cy="18" r="15.9155" stroke="#00E676" stroke-dasharray="100" stroke-dashoffset="100"></circle>
+                    </svg>
+                    <div class="ring-inner-text" id="carbs-val">0g</div>
+                </div>
+                <div class="ring-title">Glucides</div>
+            </div>
+
+            <div class="ring-box">
+                <div class="ring-svg-wrap">
+                    <svg viewBox="0 0 36 36">
+                        <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
+                        <circle class="progress-track" id="fats-circle" cx="18" cy="18" r="15.9155" stroke="#FF3D00" stroke-dasharray="100" stroke-dashoffset="100"></circle>
+                    </svg>
+                    <div class="ring-inner-text" id="fats-val">0g</div>
+                </div>
+                <div class="ring-title">Lipides</div>
+            </div>
         </div>
+
         <div class="whoop-module">
-            <div class="module-label">Calories Restantes</div>
-            <div class="module-data">1,240 <span>kcal</span></div>
+            <div class="module-label">Calories consommées</div>
+            <div class="module-data" id="cal-display">0 <span>kcal</span></div>
         </div>
-        <button class="action-btn">Scanner un repas</button>
+
+        <button class="action-btn" onclick="switchView('view-journal')">Scanner un repas</button>
+        <button class="secondary-btn" id="reset-day">Réinitialiser la journée</button>
     </div>
 
     <!-- VUE 2 : ANALYSES -->
     <div id="view-analyses" class="view-section">
         <div class="whoop-module">
-            <div class="module-label">Répartition Macros</div>
-            <p style="color: var(--text-muted); font-size: 13px; margin-top: 10px;">(Graphiques détaillés à venir ici)</p>
+            <div class="module-label">Objectifs Journaliers</div>
+            <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Protéines cibles : 180g</p>
+            <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Glucides cibles : 250g</p>
+            <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Lipides cibles : 70g</p>
         </div>
     </div>
 
-    <!-- VUE 3 : JOURNAL (Appareil photo & Notes) -->
+    <!-- VUE 3 : JOURNAL (Appareil photo & IA Gemini) -->
     <div id="view-journal" class="view-section">
         <div class="whoop-module">
-            <div class="module-label">Nouveau Repas</div>
+            <div class="module-label">Analyse IA par Photo</div>
             
-            <!-- Accès natif à l'appareil photo du téléphone -->
             <div class="camera-wrapper">
-                <label for="camera-input">📸 Prendre en photo</label>
+                <img id="image-preview" class="preview-img" alt="Aperçu du repas">
+                <label for="camera-input">📸 Prendre en photo le plat</label>
                 <input type="file" id="camera-input" accept="image/*" capture="environment">
             </div>
 
-            <!-- Saisie de texte native -->
-            <textarea class="textarea-custom" placeholder="Décrivez votre repas ou vos sensations..."></textarea>
-            
-            <button class="action-btn" style="margin-top: 20px;">Enregistrer l'entrée</button>
+            <div id="loading-text" class="status-loading">Analyse du repas par Gemini... ⚡</div>
+            <button class="action-btn" id="send-ai-btn" style="display:none;">Analyser avec l'IA</button>
         </div>
     </div>
 
-    <!-- VUE 4 : PROFIL -->
+    <!-- VUE 4 : PROFIL (Clé API Gemini) -->
     <div id="view-profil" class="view-section">
         <div class="whoop-module">
-            <div class="module-label">Paramètres</div>
-            <p style="color: var(--text-muted); font-size: 13px; margin-top: 10px;">Réglage des objectifs, âge, poids, etc.</p>
+            <div class="module-label">Configuration Gemini API</div>
+            <p style="color: var(--text-muted); font-size: 12px; margin-top: 6px; margin-bottom: 12px;">Entre ta clé API Google AI Studio pour activer l'analyse photo.</p>
+            <input type="password" id="api-key-input" class="input-text" placeholder="Colle ta clé API ici...">
+            <button class="action-btn" id="save-key-btn" style="margin-top: 14px; padding: 12px;">Enregistrer la clé</button>
         </div>
     </div>
 
-    <!-- BARRE DE NAVIGATION (Contrôle le système de vues) -->
-    <nav id="bottom-nav">
-        <div class="nav-link active" data-target="view-accueil">Accueil</div>
-        <div class="nav-link" data-target="view-analyses">Analyses</div>
-        <div class="nav-link" data-target="view-journal">Journal</div>
-        <div class="nav-link" data-target="view-profil">Profil</div>
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="nav-link active" onclick="switchView('view-accueil')">Accueil</div>
+        <div class="nav-link" onclick="switchView('view-analyses')">Analyses</div>
+        <div class="nav-link" onclick="switchView('view-journal')">Journal</div>
+        <div class="nav-link" onclick="switchView('view-profil')">Profil</div>
     </nav>
 
     <script>
-        // Système de navigation Single Page Application (SPA)
-        const navLinks = document.querySelectorAll('.nav-link');
-        const views = document.querySelectorAll('.view-section');
+        const targets = { prot: 180, carbs: 250, fats: 70 };
+        let data = JSON.parse(localStorage.getItem('fuel_gemini_data')) || { calories: 0, prot: 0, carbs: 0, fats: 0 };
+        let currentImageBase64 = null;
+        let currentMimeType = null;
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                // 1. Retirer la classe active de tous les boutons
-                navLinks.forEach(nav => nav.classList.remove('active'));
-                // 2. Ajouter la classe active au bouton cliqué
-                link.classList.add('active');
+        // Gestion de la navigation SPA
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            if(viewId === 'view-accueil') document.querySelectorAll('.nav-link')[0].classList.add('active');
+            if(viewId === 'view-analyses') document.querySelectorAll('.nav-link')[1].classList.add('active');
+            if(viewId === 'view-journal') document.querySelectorAll('.nav-link')[2].classList.add('active');
+            if(viewId === 'view-profil') document.querySelectorAll('.nav-link')[3].classList.add('active');
+        }
 
-                // 3. Cacher toutes les vues
-                views.forEach(view => view.classList.remove('active'));
-                
-                // 4. Afficher la vue ciblée (grâce à l'attribut data-target)
-                const targetId = link.getAttribute('data-target');
-                document.getElementById(targetId).classList.add('active');
-            });
+        function renderUI() {
+            document.getElementById('cal-display').innerHTML = `${data.calories.toLocaleString()} <span>kcal</span>`;
+            document.getElementById('prot-val').innerText = `${data.prot}g`;
+            document.getElementById('carbs-val').innerText = `${data.carbs}g`;
+            document.getElementById('fats-val').innerText = `${data.fats}g`;
+
+            let pPct = Math.min(100, Math.round((data.prot / targets.prot) * 100));
+            let cPct = Math.min(100, Math.round((data.carbs / targets.carbs) * 100));
+            let fPct = Math.min(100, Math.round((data.fats / targets.fats) * 100));
+
+            document.getElementById('prot-circle').style.strokeDashoffset = 100 - pPct;
+            document.getElementById('carbs-circle').style.strokeDashoffset = 100 - cPct;
+            document.getElementById('fats-circle').style.strokeDashoffset = 100 - fPct;
+
+            localStorage.setItem('fuel_gemini_data', JSON.stringify(data));
+        }
+
+        // Sauvegarde de la clé API
+        document.getElementById('save-key-btn').addEventListener('click', () => {
+            const key = document.getElementById('api-key-input').value.trim();
+            if(key) {
+                localStorage.setItem('gemini_api_key', key);
+                alert("Clé API enregistrée avec succès sur l'appareil !");
+            }
         });
 
-        // Feedback visuel quand on prend une photo
+        // Charger la clé existante dans le champ si elle existe
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if(savedKey) document.getElementById('api-key-input').value = savedKey;
+            renderUI();
+        });
+
+        // Capture photo et conversion Base64
         document.getElementById('camera-input').addEventListener('change', function(e) {
-            if(e.target.files.length > 0) {
-                alert("Photo capturée ! (Nous ajouterons la logique d'analyse bientôt)");
+            const file = e.target.files[0];
+            if (file) {
+                currentMimeType = file.type;
+                const reader = new FileReader();
+                reader.onload = function(uploadEvent) {
+                    const base64String = uploadEvent.target.result.split(',')[1];
+                    currentImageBase64 = base64String;
+
+                    const preview = document.getElementById('image-preview');
+                    preview.src = uploadEvent.target.result;
+                    preview.style.display = 'block';
+                    
+                    document.getElementById('send-ai-btn').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Appel à l'API Gemini Vision
+        document.getElementById('send-ai-btn').addEventListener('click', async () => {
+            const apiKey = localStorage.getItem('gemini_api_key');
+            if(!apiKey) {
+                alert("Veuillez d'abord configurer votre clé API Gemini dans l'onglet Profil !");
+                switchView('view-profil');
+                return;
+            }
+
+            if(!currentImageBase64) return;
+
+            document.getElementById('send-ai-btn').style.display = 'none';
+            document.getElementById('loading-text').style.display = 'block';
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [
+                                { text: "Analyse ce plat en photo. Estime les calories, les protéines (en g), les glucides (en g) et les lipides (en g). Réponds STRICTEMENT au format JSON brut sans balises markdown, avec exactement ces clés : {\"calories\": 0, \"prot\": 0, \"carbs\": 0, \"fats\": 0}." },
+                                { inline_data: { mime_type: currentMimeType, data: currentImageBase64 } }
+                            ]
+                        }]
+                    })
+                });
+
+                const result = await response.json();
+                const rawText = result.candidates[0].content.parts[0].text;
+                
+                // Nettoyage du JSON renvoyé par l'IA
+                const cleanJson = JSON.parse(rawText.replace(/```json/g, '').replace(/```/g, '').trim());
+
+                data.calories += cleanJson.calories || 0;
+                data.prot += cleanJson.prot || 0;
+                data.carbs += cleanJson.carbs || 0;
+                data.fats += cleanJson.fats || 0;
+
+                renderUI();
+                alert(`Repas validé !\n+${cleanJson.calories} kcal\nProtéines : +${cleanJson.prot}g`);
+                switchView('view-accueil');
+
+            } catch (error) {
+                console.error(error);
+                alert("Erreur lors de l'analyse avec Gemini. Vérifie ta clé API.");
+            } finally {
+                document.getElementById('loading-text').style.display = 'none';
+            }
+        });
+
+        document.getElementById('reset-day').addEventListener('click', () => {
+            if(confirm("Remettre la journée à zéro ?")) {
+                data = { calories: 0, prot: 0, carbs: 0, fats: 0 };
+                renderUI();
             }
         });
     </script>
