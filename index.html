@@ -137,7 +137,6 @@
     <button class="btn-scan" id="scan-btn">Ajouter un repas</button>
 
     <script>
-        // État de l'application (sauvegardé en localStorage)
         let data = JSON.parse(localStorage.getItem('fuel_data')) || {
             calories: 1850,
             prot: 142,
@@ -145,7 +144,7 @@
             fats: 55
         };
 
-        const targets = { prot: 180, carbs: 250, fats: 70, calMax: 2200 };
+        const targets = { prot: 180, carbs: 250, fats: 70 };
 
         function updateUI() {
             document.getElementById('cal-val').innerText = data.calories.toLocaleString();
@@ -164,7 +163,7 @@
             let addedCal = prompt("Calories à ajouter :", "500");
             if (addedCal !== null) {
                 data.calories -= parseInt(addedCal || 0);
-                data.prot += 30; // Exemple d'ajout par défaut
+                data.prot += 30;
                 data.carbs += 40;
                 data.fats += 15;
                 updateUI();
