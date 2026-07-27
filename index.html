@@ -34,6 +34,7 @@
         header span {
             color: #00E676;
             font-weight: 700;
+            cursor: pointer;
         }
 
         /* Rings Section */
@@ -79,7 +80,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
         }
         .ring-label {
@@ -118,7 +119,7 @@
             font-weight: 400;
         }
 
-        /* Action Button */
+        /* Action Buttons */
         .btn-scan {
             background-color: #00E676;
             color: #000000;
@@ -133,6 +134,105 @@
             cursor: pointer;
             box-shadow: 0 0 20px rgba(0, 230, 118, 0.15);
             margin-top: 10px;
+        }
+        .btn-reset {
+            background-color: transparent;
+            color: #FF3D00;
+            border: 1px solid #3A1711;
+            width: 100%;
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 200;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background-color: #111418;
+            border: 1px solid #1E232A;
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 500px;
+            padding: 24px;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .modal-title {
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #888888;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .input-group {
+            margin-bottom: 14px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #888888;
+            margin-bottom: 6px;
+        }
+        .input-group input {
+            width: 100%;
+            background-color: #0A0D10;
+            border: 1px solid #222B35;
+            border-radius: 10px;
+            padding: 12px;
+            color: #FFF;
+            font-size: 16px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-modal-save {
+            background-color: #00E676;
+            color: #000;
+            border: none;
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+        .btn-modal-cancel {
+            background-color: #222B35;
+            color: #FFF;
+            border: none;
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
         }
 
         /* Bottom Nav Bar */
@@ -163,19 +263,19 @@
 
     <header>
         <div>Fuel Engine</div>
-        <span id="streak-badge">11 %</span>
+        <span id="reset-day">Réinitialiser</span>
     </header>
 
-    <!-- Anneaux de progression (Style Whoop) -->
+    <!-- Anneaux de progression -->
     <div class="rings-container">
         <!-- Protéines -->
         <div class="ring-card">
             <div class="ring-wrapper">
                 <svg viewBox="0 0 36 36">
                     <circle class="ring-bg" cx="18" cy="18" r="15.9155"></circle>
-                    <circle class="ring-fill" id="prot-circle" cx="18" cy="18" r="15.9155" stroke="#0066FF" stroke-dasharray="100" stroke-dashoffset="30"></circle>
+                    <circle class="ring-fill" id="prot-circle" cx="18" cy="18" r="15.9155" stroke="#0066FF" stroke-dasharray="100" stroke-dashoffset="100"></circle>
                 </svg>
-                <div class="ring-content" id="prot-pct">78%</div>
+                <div class="ring-content" id="prot-text">0g</div>
             </div>
             <div class="ring-label">Protéines</div>
         </div>
@@ -185,9 +285,9 @@
             <div class="ring-wrapper">
                 <svg viewBox="0 0 36 36">
                     <circle class="ring-bg" cx="18" cy="18" r="15.9155"></circle>
-                    <circle class="ring-fill" id="carbs-circle" cx="18" cy="18" r="15.9155" stroke="#00E676" stroke-dasharray="100" stroke-dashoffset="20"></circle>
+                    <circle class="ring-fill" id="carbs-circle" cx="18" cy="18" r="15.9155" stroke="#00E676" stroke-dasharray="100" stroke-dashoffset="100"></circle>
                 </svg>
-                <div class="ring-content" id="carbs-pct">84%</div>
+                <div class="ring-content" id="carbs-text">0g</div>
             </div>
             <div class="ring-label">Glucides</div>
         </div>
@@ -197,24 +297,52 @@
             <div class="ring-wrapper">
                 <svg viewBox="0 0 36 36">
                     <circle class="ring-bg" cx="18" cy="18" r="15.9155"></circle>
-                    <circle class="ring-fill" id="fats-circle" cx="18" cy="18" r="15.9155" stroke="#FF3D00" stroke-dasharray="100" stroke-dashoffset="25"></circle>
+                    <circle class="ring-fill" id="fats-circle" cx="18" cy="18" r="15.9155" stroke="#FF3D00" stroke-dasharray="100" stroke-dashoffset="100"></circle>
                 </svg>
-                <div class="ring-content" id="fats-pct">78%</div>
+                <div class="ring-content" id="fats-text">0g</div>
             </div>
             <div class="ring-label">Lipides</div>
         </div>
     </div>
 
-    <!-- Bloc Calories Restantes -->
+    <!-- Bloc Calories -->
     <div class="whoop-card">
         <div>
-            <div class="card-title">Calories restantes</div>
-            <div class="card-value" id="cal-val">1,850 <span>kcal</span></div>
+            <div class="card-title">Calories consommées</div>
+            <div class="card-value" id="cal-val">0 <span>kcal</span></div>
         </div>
     </div>
 
-    <!-- Bouton d'action -->
-    <button class="btn-scan" id="scan-btn">Ajouter un repas</button>
+    <!-- Boutons d'action -->
+    <button class="btn-scan" id="open-modal-btn">Ajouter un repas</button>
+    <button class="btn-reset" id="clear-btn">Remettre à zéro</button>
+
+    <!-- Modale de Saisie Interactive -->
+    <div class="modal-overlay" id="meal-modal">
+        <div class="modal-content">
+            <div class="modal-title">Ajouter un apport nutritionnel</div>
+            <div class="input-group">
+                <label>Calories (kcal)</label>
+                <input type="number" id="input-cal" placeholder="ex: 500">
+            </div>
+            <div class="input-group">
+                <label>Protéines (g)</label>
+                <input type="number" id="input-prot" placeholder="ex: 35">
+            </div>
+            <div class="input-group">
+                <label>Glucides (g)</label>
+                <input type="number" id="input-carbs" placeholder="ex: 50">
+            </div>
+            <div class="input-group">
+                <label>Lipides (g)</label>
+                <input type="number" id="input-fats" placeholder="ex: 15">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-modal-cancel" id="close-modal-btn">Annuler</button>
+                <button class="btn-modal-save" id="save-meal-btn">Ajouter</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Barre de navigation basse -->
     <nav>
@@ -225,41 +353,81 @@
     </nav>
 
     <script>
-        let data = JSON.parse(localStorage.getItem('fuel_data_v2')) || {
-            calories: 1850,
-            prot: 140,
-            carbs: 210,
-            fats: 55
+        // Cibles journalières
+        const targets = { prot: 180, carbs: 250, fats: 70 };
+
+        // État chargé depuis localStorage
+        let data = JSON.parse(localStorage.getItem('fuel_engine_v3')) || {
+            calories: 0,
+            prot: 0,
+            carbs: 0,
+            fats: 0
         };
 
-        const targets = { prot: 180, carbs: 250, fats: 70 };
+        const modal = document.getElementById('meal-modal');
 
         function updateUI() {
             document.getElementById('cal-val').innerHTML = `${data.calories.toLocaleString()} <span>kcal</span>`;
 
-            // Calcul des pourcentages pour les cercles (dashoffset va de 100 à 0)
+            document.getElementById('prot-text').innerText = `${data.prot}g`;
+            document.getElementById('carbs-text').innerText = `${data.carbs}g`;
+            document.getElementById('fats-text').innerText = `${data.fats}g`;
+
+            // Calcul des pourcentages pour les anneaux circulaires (0 à 100)
             let protPct = Math.min(100, Math.round((data.prot / targets.prot) * 100));
             let carbsPct = Math.min(100, Math.round((data.carbs / targets.carbs) * 100));
             let fatsPct = Math.min(100, Math.round((data.fats / targets.fats) * 100));
 
-            document.getElementById('prot-pct').innerText = protPct + '%';
-            document.getElementById('carbs-pct').innerText = carbsPct + '%';
-            document.getElementById('fats-pct').innerText = fatsPct + '%';
-
+            // En SVG, stroke-dashoffset va de 100 (vide) à 0 (plein)
             document.getElementById('prot-circle').style.strokeDashoffset = 100 - protPct;
             document.getElementById('carbs-circle').style.strokeDashoffset = 100 - carbsPct;
             document.getElementById('fats-circle').style.strokeDashoffset = 100 - fatsPct;
 
-            localStorage.setItem('fuel_data_v2', JSON.stringify(data));
+            localStorage.setItem('fuel_engine_v3', JSON.stringify(data));
         }
 
-        document.getElementById('scan-btn').addEventListener('click', () => {
-            let addedCal = prompt("Calories consommées :", "500");
-            if (addedCal !== null) {
-                data.calories -= parseInt(addedCal || 0);
-                data.prot += 30;
-                data.carbs += 45;
-                data.fats += 12;
+        // Ouverture / Fermeture de la modale
+        document.getElementById('open-modal-btn').addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        document.getElementById('close-modal-btn').addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // Enregistrement d'un repas
+        document.getElementById('save-meal-btn').addEventListener('click', () => {
+            let cal = parseInt(document.getElementById('input-cal').value) || 0;
+            let prot = parseInt(document.getElementById('input-prot').value) || 0;
+            let carbs = parseInt(document.getElementById('input-carbs').value) || 0;
+            let fats = parseInt(document.getElementById('input-fats').value) || 0;
+
+            data.calories += cal;
+            data.prot += prot;
+            data.carbs += carbs;
+            data.fats += fats;
+
+            // Réinitialisation des inputs
+            document.getElementById('input-cal').value = '';
+            document.getElementById('input-prot').value = '';
+            document.getElementById('input-carbs').value = '';
+            document.getElementById('input-fats').value = '';
+
+            modal.classList.remove('active');
+            updateUI();
+        });
+
+        // Remise à zéro
+        document.getElementById('clear-btn').addEventListener('click', () => {
+            if(confirm("Remettre la journée à zéro ?")) {
+                data = { calories: 0, prot: 0, carbs: 0, fats: 0 };
+                updateUI();
+            }
+        });
+
+        document.getElementById('reset-day').addEventListener('click', () => {
+            if(confirm("Remettre la journée à zéro ?")) {
+                data = { calories: 0, prot: 0, carbs: 0, fats: 0 };
                 updateUI();
             }
         });
