@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Fuel Engine</title>
     <style>
+        /* ============================================================
+           1. VARIABLES & RESET GLOBAL
+        ============================================================ */
         :root {
             --bg-color: #000000;
             --card-bg: #111318;
@@ -33,7 +36,39 @@
             flex-direction: column;
         }
 
-        /* Top Bar */
+        /* ============================================================
+           2. SPLASH SCREEN
+        ============================================================ */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOutSplash 0.5s ease 1.5s forwards;
+        }
+        .splash-logo {
+            font-size: 18px;
+            letter-spacing: 4px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #FFF;
+            animation: pulseLogo 1s infinite alternate;
+        }
+        @keyframes pulseLogo {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            100% { transform: scale(1.05); opacity: 1; }
+        }
+        @keyframes fadeOutSplash {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        /* ============================================================
+           3. TOP BAR (commune aux 4 pages)
+        ============================================================ */
         .top-nav {
             display: flex;
             justify-content: space-between;
@@ -54,44 +89,107 @@
             gap: 8px;
         }
         .date-pill span { color: var(--accent-green); }
-        .profile-icon {
-            width: 32px; height: 32px;
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; color: var(--text-muted);
-        }
 
-        .brand-title {
-            text-align: center;
-            font-size: 10px;
-            letter-spacing: 3px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 16px;
-            font-weight: 700;
-        }
-
-        /* SPA Views */
-        .view-section {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-        .view-section.active {
-            display: block;
-        }
+        /* ============================================================
+           4. GESTION DES VUES (SPA)
+        ============================================================ */
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
+            from { opacity: 0; transform: translateY(4px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Rings Grid */
+        /* ============================================================
+           5. COMPOSANTS PARTAGÉS (hero, cards, listes de données)
+        ============================================================ */
+        .score-hero-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .score-title {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .score-value {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--accent-green);
+        }
+        .score-value span { font-size: 18px; color: var(--text-muted); }
+        .score-subtext {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        .module-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+        }
+        .module-label {
+            font-size: 10px; letter-spacing: 1.5px; color: var(--text-muted);
+            text-transform: uppercase; margin-bottom: 8px; font-weight: 700;
+        }
+        .module-label-row {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 8px;
+        }
+        .module-label-row .module-label { margin-bottom: 0; }
+        .module-tag {
+            font-size: 9px; font-weight: 800; letter-spacing: 1px;
+            color: var(--accent-blue); text-transform: uppercase;
+        }
+        .module-sublabel {
+            font-size: 10px; letter-spacing: 1px; color: var(--text-muted);
+            text-transform: uppercase; margin: 4px 0 10px 0; font-weight: 700;
+            padding-top: 10px; border-top: 1px solid #161A22;
+        }
+
+        .action-btn {
+            background-color: var(--accent-green); color: #000;
+            border: none; width: 100%; padding: 16px; border-radius: 16px;
+            font-size: 12px; font-weight: 800; letter-spacing: 1.5px;
+            text-transform: uppercase; cursor: pointer;
+            margin-bottom: 12px; display: block; text-align: center;
+        }
+        .action-btn:disabled { background-color: #1C222D; color: #555E6D; cursor: default; }
+        .action-btn.loading { background-color: #1C222D; color: var(--text-muted); }
+        .action-btn.secondary {
+            background-color: #0A0D12; color: var(--text-main); border: 1px solid var(--card-border);
+        }
+
+        .raw-data-list {
+            font-size: 13px; color: var(--text-muted);
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .raw-item {
+            display: flex; justify-content: space-between;
+            padding: 6px 0; border-bottom: 1px solid #161A22;
+        }
+        .raw-item:last-child { border-bottom: none; }
+        .raw-item span:last-child { color: #FFF; font-weight: 600; }
+
+        /* Anneaux SVG (utilisés en page Accueil ET Santé) */
         .rings-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
         .ring-box {
             background-color: var(--card-bg);
@@ -104,106 +202,53 @@
         }
         .ring-svg-wrap {
             position: relative;
-            width: 68px;
-            height: 68px;
-            margin-bottom: 10px;
+            width: 60px;
+            height: 60px;
+            margin-bottom: 8px;
         }
         .ring-svg-wrap svg {
             transform: rotate(-90deg);
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
         }
         .ring-svg-wrap circle {
             fill: none;
-            stroke-width: 5.5;
+            stroke-width: 5;
         }
         .bg-track { stroke: #1C222D; }
-        .progress-track { stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
-        
+        .progress-track { stroke-linecap: round; }
         .ring-inner-text {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 13px;
-            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 700;
         }
         .ring-title {
-            font-size: 10px;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: 600;
+            font-size: 9px; letter-spacing: 1px; color: var(--text-muted);
+            text-transform: uppercase; font-weight: 600;
         }
 
-        /* Modules */
-        .whoop-module {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 20px;
-            margin-bottom: 12px;
+        /* Champs de saisie (utilisés en page Profil) */
+        .input-group { margin-bottom: 12px; }
+        .input-group:last-child { margin-bottom: 0; }
+        .input-label {
+            font-size: 11px; color: var(--text-muted); margin-bottom: 6px; display: block; font-weight: 600;
         }
-        .module-label {
-            font-size: 10px; letter-spacing: 1.5px; color: var(--text-muted);
-            text-transform: uppercase; margin-bottom: 6px; font-weight: 600;
-        }
-        .module-data { font-size: 32px; font-weight: 700; letter-spacing: -1px; }
-        .module-data span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
-        
-        .action-btn {
-            background-color: var(--accent-green); color: #000;
-            border: none; width: 100%; padding: 18px; border-radius: 16px;
-            font-size: 13px; font-weight: 800; letter-spacing: 1.5px;
-            text-transform: uppercase; cursor: pointer;
-            box-shadow: 0 0 25px rgba(0, 230, 118, 0.2);
-            margin-top: 12px; display: block; text-align: center;
-        }
-
-        .secondary-btn {
-            background-color: transparent; color: var(--accent-orange);
-            border: 1px solid #361711; width: 100%; padding: 14px;
-            border-radius: 16px; font-size: 11px; font-weight: 700;
-            letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
-            margin-top: 10px;
-        }
-
-        /* Journal & Camera UI */
-        .camera-wrapper {
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; padding: 30px 20px;
-            border: 2px dashed var(--card-border); border-radius: 18px;
-            margin-bottom: 16px; text-align: center;
-        }
-        .camera-wrapper label {
-            background-color: var(--accent-green); color: #000;
-            padding: 14px 24px; border-radius: 14px; font-size: 12px;
-            font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-            cursor: pointer; display: inline-block;
-        }
-        input[type="file"] { display: none; }
-        
-        .preview-img {
-            width: 100%; max-height: 200px; object-fit: cover;
-            border-radius: 12px; margin-bottom: 14px; display: none;
-        }
-        
-        .status-loading {
-            text-align: center; color: var(--accent-green); font-size: 12px;
-            font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-            margin-top: 10px; display: none;
-        }
-
-        /* Inputs */
         .input-text {
             width: 100%; background-color: #0A0D12; border: 1px solid var(--card-border);
-            border-radius: 12px; padding: 14px; color: #FFF; font-size: 15px; outline: none;
-            margin-top: 8px;
+            border-radius: 12px; padding: 12px; color: #FFF; font-size: 14px; outline: none;
+            font-family: inherit;
+        }
+        .input-text:focus { border-color: var(--accent-green); }
+        .input-text::placeholder { color: #4C5566; }
+        .input-row { display: flex; gap: 10px; }
+        .input-row .input-group { flex: 1; }
+        .select-goal {
+            width: 100%; background-color: #0A0D12; border: 1px solid var(--card-border);
+            border-radius: 12px; padding: 12px; color: #FFF; font-size: 14px; outline: none;
+            font-family: inherit; appearance: none; -webkit-appearance: none;
         }
 
-        /* Bottom Nav */
+        /* Bandeau bas fixe */
         nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background-color: #0A0C10; border-top: 1px solid #1A212D;
@@ -216,28 +261,220 @@
             cursor: pointer;
         }
         .nav-link.active { color: var(--accent-green); }
+
+        /* ============================================================
+           6. PAGE ACCUEIL — spécifique
+        ============================================================ */
+        /* (les rings-grid, module-card, raw-data-list sont déjà mutualisés ci-dessus) */
+
+        /* ============================================================
+           7. PAGE SANTÉ & RÉCUPÉRATION — spécifique
+        ============================================================ */
+        .sleep-bar {
+            display: flex;
+            width: 100%;
+            height: 10px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .sleep-seg-deep { background-color: var(--accent-blue); }
+        .sleep-seg-light { background-color: #3D4A66; }
+        .sleep-seg-rem { background-color: var(--accent-green); }
+        .sleep-legend {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .sleep-legend-item { display: flex; align-items: center; gap: 5px; }
+        .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+        .metric-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid #161A22;
+        }
+        .metric-row:last-child { border-bottom: none; }
+        .metric-label { font-size: 13px; color: var(--text-muted); }
+        .metric-value-wrap { display: flex; align-items: center; gap: 6px; }
+        .metric-value { font-size: 14px; font-weight: 700; color: #FFF; }
+        .trend-up { color: var(--accent-green); font-size: 11px; }
+        .trend-down { color: var(--accent-orange); font-size: 11px; }
+        .trend-flat { color: var(--text-muted); font-size: 11px; }
+
+        /* ============================================================
+           8. PAGE COACH IA & SIMULATEUR — spécifique
+        ============================================================ */
+        .camera-wrapper {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; padding: 24px 16px;
+            border: 2px dashed var(--card-border); border-radius: 14px;
+            margin-bottom: 12px; text-align: center; background-color: #0A0D12;
+        }
+        .camera-wrapper label {
+            background-color: var(--accent-blue); color: #FFF;
+            padding: 12px 20px; border-radius: 12px; font-size: 11px;
+            font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; display: inline-block;
+        }
+        input[type="file"] { display: none; }
+        .preview-img {
+            width: 100%; max-height: 160px; object-fit: cover;
+            border-radius: 10px; margin-bottom: 10px; display: none;
+        }
+        .input-comment {
+            width: 100%; background-color: #0A0D12; border: 1px solid var(--card-border);
+            border-radius: 12px; padding: 12px; color: #FFF; font-size: 13px; outline: none;
+            margin-bottom: 12px; resize: none; height: 70px;
+            font-family: inherit;
+        }
+        .input-comment::placeholder { color: #4C5566; }
+
+        .impact-result { display: none; }
+        .impact-result.visible { display: block; animation: fadeIn 0.3s ease; }
+        .impact-chart-wrap {
+            position: relative;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .impact-chart-wrap svg { width: 100%; height: auto; display: block; }
+        .chart-grid-line { stroke: #1C222D; stroke-width: 1; }
+        .chart-now-line { stroke: #3D4A66; stroke-width: 1; stroke-dasharray: 3 3; }
+        .chart-curve-fill { fill: url(#curveGradient); }
+        .chart-curve-line { fill: none; stroke: var(--accent-orange); stroke-width: 2; }
+        .chart-now-dot { fill: var(--text-main); }
+        .chart-axis-label {
+            fill: var(--text-muted); font-size: 8px; font-weight: 700;
+            font-family: -apple-system, sans-serif;
+        }
+        .chart-now-label {
+            fill: var(--text-muted); font-size: 8px; font-weight: 800;
+            font-family: -apple-system, sans-serif; text-transform: uppercase;
+        }
+        .impact-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .impact-stat {
+            background-color: #0A0D12;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 10px 6px;
+            text-align: center;
+        }
+        .impact-stat-value { font-size: 15px; font-weight: 800; color: #FFF; }
+        .impact-stat-label {
+            font-size: 8px; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 0.5px; font-weight: 700; margin-top: 3px;
+        }
+        .verdict-banner {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 14px; border-radius: 12px; margin-top: 10px;
+            background-color: rgba(0, 230, 118, 0.1);
+        }
+        .verdict-banner.warning { background-color: rgba(255, 61, 0, 0.1); }
+        .verdict-icon { font-size: 16px; }
+        .verdict-text { font-size: 12px; font-weight: 600; color: #FFF; line-height: 1.4; }
+        .verdict-text b { color: var(--accent-green); }
+        .verdict-banner.warning .verdict-text b { color: var(--accent-orange); }
+
+        .timing-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid #161A22;
+        }
+        .timing-row:last-child { border-bottom: none; }
+        .timing-time { font-size: 12px; color: var(--text-muted); font-weight: 700; width: 50px; flex-shrink: 0; }
+        .timing-desc { font-size: 13px; color: #FFF; flex-grow: 1; padding-right: 8px; }
+        .timing-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; flex-shrink: 0; }
+        .badge-optimal { background-color: rgba(0, 230, 118, 0.15); color: var(--accent-green); }
+        .badge-warning { background-color: rgba(255, 61, 0, 0.15); color: var(--accent-orange); }
+
+        /* ============================================================
+           9. PAGE PROFIL & COMMUNAUTÉ — spécifique
+        ============================================================ */
+        .profile-avatar {
+            width: 52px; height: 52px; border-radius: 50%;
+            background-color: #0A0D12; border: 1px solid var(--card-border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 800; color: var(--accent-green);
+            margin: 0 auto 12px auto;
+        }
+
+        .forum-post {
+            background-color: #0A0D12;
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+        }
+        .forum-post:last-child { margin-bottom: 0; }
+        .forum-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 6px;
+        }
+        .forum-author { font-size: 12px; font-weight: 700; color: #FFF; }
+        .forum-time { font-size: 10px; color: var(--text-muted); }
+        .forum-content { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+        .forum-content b { color: var(--text-main); }
+        .forum-footer {
+            display: flex; align-items: center; gap: 14px; margin-top: 8px;
+        }
+        .forum-action {
+            font-size: 10px; color: var(--text-muted); font-weight: 700;
+            display: flex; align-items: center; gap: 4px; cursor: pointer;
+        }
+        .forum-input-row {
+            display: flex; gap: 8px; margin-top: 12px;
+        }
+        .forum-input-row .input-text { flex-grow: 1; }
+        .forum-send-btn {
+            background-color: var(--accent-green); color: #000; border: none;
+            border-radius: 12px; padding: 0 16px; font-size: 11px; font-weight: 800;
+            text-transform: uppercase; cursor: pointer;
+        }
+
+        .legal-footer { text-align: center; padding: 16px 8px 4px 8px; }
+        .legal-footer p { font-size: 10px; color: #444C5A; line-height: 1.6; }
+        .legal-footer a { color: #5A6478; text-decoration: underline; }
+
+        .logout-btn {
+            background: none; border: none; width: 100%; padding: 12px;
+            font-size: 11px; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase; color: var(--accent-orange); cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-    <div class="top-nav">
-        <div class="profile-icon">ME</div>
-        <div class="date-pill">AUJOURD'HUI <span>●</span></div>
-        <div class="profile-icon">⚡</div>
+    <div id="splash-screen">
+        <div class="splash-logo">Fuel Engine ⚡</div>
     </div>
 
-    <div class="brand-title">Fuel Engine AI</div>
+    <div class="top-nav">
+        <div class="date-pill">AUJOURD'HUI <span>●</span></div>
+    </div>
 
-    <!-- VUE 1 : ACCUEIL -->
+    <!-- ================================================================
+         VUE 1 : ACCUEIL
+    ================================================================= -->
     <div id="view-accueil" class="view-section active">
+
+        <div class="score-hero-card">
+            <div class="score-title">Score Énergie du Jour</div>
+            <div class="score-value">88<span>%</span></div>
+        </div>
+
         <div class="rings-grid">
             <div class="ring-box">
                 <div class="ring-svg-wrap">
                     <svg viewBox="0 0 36 36">
                         <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
-                        <circle class="progress-track" id="prot-circle" cx="18" cy="18" r="15.9155" stroke="#0066FF" stroke-dasharray="100" stroke-dashoffset="100"></circle>
+                        <circle class="progress-track" cx="18" cy="18" r="15.9155" stroke="#0066FF" stroke-dasharray="100" stroke-dashoffset="30"></circle>
                     </svg>
-                    <div class="ring-inner-text" id="prot-val">0g</div>
+                    <div class="ring-inner-text">130g</div>
                 </div>
                 <div class="ring-title">Protéines</div>
             </div>
@@ -246,9 +483,9 @@
                 <div class="ring-svg-wrap">
                     <svg viewBox="0 0 36 36">
                         <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
-                        <circle class="progress-track" id="carbs-circle" cx="18" cy="18" r="15.9155" stroke="#00E676" stroke-dasharray="100" stroke-dashoffset="100"></circle>
+                        <circle class="progress-track" cx="18" cy="18" r="15.9155" stroke="#00E676" stroke-dasharray="100" stroke-dashoffset="45"></circle>
                     </svg>
-                    <div class="ring-inner-text" id="carbs-val">0g</div>
+                    <div class="ring-inner-text">190g</div>
                 </div>
                 <div class="ring-title">Glucides</div>
             </div>
@@ -257,199 +494,403 @@
                 <div class="ring-svg-wrap">
                     <svg viewBox="0 0 36 36">
                         <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
-                        <circle class="progress-track" id="fats-circle" cx="18" cy="18" r="15.9155" stroke="#FF3D00" stroke-dasharray="100" stroke-dashoffset="100"></circle>
+                        <circle class="progress-track" cx="18" cy="18" r="15.9155" stroke="#FF3D00" stroke-dasharray="100" stroke-dashoffset="60"></circle>
                     </svg>
-                    <div class="ring-inner-text" id="fats-val">0g</div>
+                    <div class="ring-inner-text">55g</div>
                 </div>
                 <div class="ring-title">Lipides</div>
             </div>
         </div>
 
-        <div class="whoop-module">
-            <div class="module-label">Calories consommées</div>
-            <div class="module-data" id="cal-display">0 <span>kcal</span></div>
+        <button class="action-btn" onclick="alert('Ouverture de l\'appareil photo + bloc commentaire IA')">📷 Scanner un repas</button>
+
+        <div class="module-card">
+            <div class="module-label">Données Brutes & Historique</div>
+            <div class="raw-data-list">
+                <div class="raw-item"><span>Calories totales</span><span>2,140 kcal</span></div>
+                <div class="raw-item"><span>Eau consommée</span><span>2.4 L</span></div>
+                <div class="raw-item"><span>Repas enregistrés</span><span>3 / 4</span></div>
+                <div class="raw-item"><span>Index glycémique moyen</span><span>Bas</span></div>
+            </div>
         </div>
 
-        <button class="action-btn" onclick="switchView('view-journal')">Scanner un repas</button>
-        <button class="secondary-btn" id="reset-day">Réinitialiser la journée</button>
     </div>
 
-    <!-- VUE 2 : ANALYSES -->
-    <div id="view-analyses" class="view-section">
-        <div class="whoop-module">
-            <div class="module-label">Objectifs Journaliers</div>
-            <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Protéines cibles : 180g</p>
-            <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Glucides cibles : 250g</p>
-            <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Lipides cibles : 70g</p>
+    <!-- ================================================================
+         VUE 2 : SANTÉ & RÉCUPÉRATION
+    ================================================================= -->
+    <div id="view-sante" class="view-section">
+
+        <div class="score-hero-card">
+            <div class="score-title">Score de Récupération</div>
+            <div class="score-value">76<span>%</span></div>
+            <div class="score-subtext">Corps prêt pour une charge modérée à élevée</div>
         </div>
-    </div>
 
-    <!-- VUE 3 : JOURNAL -->
-    <div id="view-journal" class="view-section">
-        <div class="whoop-module">
-            <div class="module-label">Analyse IA par Photo</div>
-            
-            <div class="camera-wrapper">
-                <img id="image-preview" class="preview-img" alt="Aperçu du repas">
-                <label for="camera-input">📸 Appareil photo ou Galerie</label>
-                <input type="file" id="camera-input" accept="image/*">
+        <div class="rings-grid">
+            <div class="ring-box">
+                <div class="ring-svg-wrap">
+                    <svg viewBox="0 0 36 36">
+                        <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
+                        <circle class="progress-track" cx="18" cy="18" r="15.9155" stroke="#0066FF" stroke-dasharray="100" stroke-dashoffset="18"></circle>
+                    </svg>
+                    <div class="ring-inner-text">7h42</div>
+                </div>
+                <div class="ring-title">Sommeil</div>
             </div>
 
-            <div id="loading-text" class="status-loading">Analyse du repas par Gemini... ⚡</div>
-            <button class="action-btn" id="send-ai-btn" style="display:none;">Analyser avec l'IA</button>
+            <div class="ring-box">
+                <div class="ring-svg-wrap">
+                    <svg viewBox="0 0 36 36">
+                        <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
+                        <circle class="progress-track" cx="18" cy="18" r="15.9155" stroke="#00E676" stroke-dasharray="100" stroke-dashoffset="35"></circle>
+                    </svg>
+                    <div class="ring-inner-text">62ms</div>
+                </div>
+                <div class="ring-title">HRV</div>
+            </div>
+
+            <div class="ring-box">
+                <div class="ring-svg-wrap">
+                    <svg viewBox="0 0 36 36">
+                        <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
+                        <circle class="progress-track" cx="18" cy="18" r="15.9155" stroke="#FF3D00" stroke-dasharray="100" stroke-dashoffset="55"></circle>
+                    </svg>
+                    <div class="ring-inner-text">48bpm</div>
+                </div>
+                <div class="ring-title">FC Repos</div>
+            </div>
         </div>
+
+        <div class="module-card">
+            <div class="module-label">Répartition du Sommeil</div>
+            <div class="sleep-bar">
+                <div class="sleep-seg-deep" style="width: 22%;"></div>
+                <div class="sleep-seg-light" style="width: 56%;"></div>
+                <div class="sleep-seg-rem" style="width: 22%;"></div>
+            </div>
+            <div class="sleep-legend">
+                <div class="sleep-legend-item"><span class="legend-dot" style="background-color:var(--accent-blue);"></span>Profond 1h42</div>
+                <div class="sleep-legend-item"><span class="legend-dot" style="background-color:#3D4A66;"></span>Léger 4h20</div>
+                <div class="sleep-legend-item"><span class="legend-dot" style="background-color:var(--accent-green);"></span>Paradoxal 1h40</div>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-label">Tendances (vs moyenne 7j)</div>
+            <div class="metric-row">
+                <span class="metric-label">Variabilité cardiaque (HRV)</span>
+                <div class="metric-value-wrap">
+                    <span class="metric-value">62 ms</span>
+                    <span class="trend-up">▲ 8%</span>
+                </div>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Fréquence cardiaque au repos</span>
+                <div class="metric-value-wrap">
+                    <span class="metric-value">48 bpm</span>
+                    <span class="trend-down">▼ 3%</span>
+                </div>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Fréquence respiratoire</span>
+                <div class="metric-value-wrap">
+                    <span class="metric-value">14.2 rpm</span>
+                    <span class="trend-flat">■ stable</span>
+                </div>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">SpO2 moyen</span>
+                <div class="metric-value-wrap">
+                    <span class="metric-value">98%</span>
+                    <span class="trend-flat">■ stable</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-label">Données Brutes</div>
+            <div class="raw-data-list">
+                <div class="raw-item"><span>Température cutanée</span><span>+0.2°C</span></div>
+                <div class="raw-item"><span>Efficacité du sommeil</span><span>91%</span></div>
+                <div class="raw-item"><span>Réveils nocturnes</span><span>2</span></div>
+                <div class="raw-item"><span>Charge de la veille</span><span>Modérée</span></div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- VUE 4 : PROFIL -->
+    <!-- ================================================================
+         VUE 3 : COACH IA & SIMULATEUR
+    ================================================================= -->
+    <div id="view-coach" class="view-section">
+
+        <div class="score-hero-card">
+            <div class="score-title">Fenêtre Anabolique & Timing</div>
+            <div class="score-value" style="font-size:32px; color:var(--accent-blue);">Optimal (+2h)</div>
+            <div class="score-subtext">Pic d'insuline idéal post-effort détecté</div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-label-row">
+                <div class="module-label">Simulateur d'Impact Métabolique</div>
+                <div class="module-tag">IA</div>
+            </div>
+
+            <div class="camera-wrapper">
+                <img id="image-preview" class="preview-img" alt="Aperçu plat">
+                <label for="camera-input">📸 Scanner le plat</label>
+                <input type="file" id="camera-input" accept="image/*" capture="environment">
+            </div>
+
+            <textarea class="input-comment" id="ai-comment" placeholder="Ajoute un contexte pour l'IA (ex: 'Pris juste après une séance lourde de jambes, moitié de sauce')..."></textarea>
+
+            <button class="action-btn" id="simulate-btn" onclick="runSimulation()">Lancer la simulation d'impact</button>
+
+            <div class="impact-result" id="impact-result">
+                <div class="impact-chart-wrap">
+                    <svg viewBox="0 0 300 120" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="curveGradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#FF3D00" stop-opacity="0.35"/>
+                                <stop offset="100%" stop-color="#FF3D00" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                        <line class="chart-grid-line" x1="0" y1="30" x2="300" y2="30"></line>
+                        <line class="chart-grid-line" x1="0" y1="60" x2="300" y2="60"></line>
+                        <line class="chart-grid-line" x1="0" y1="90" x2="300" y2="90"></line>
+                        <line class="chart-now-line" x1="15" y1="10" x2="15" y2="105"></line>
+
+                        <path class="chart-curve-fill" d="M15,95 C 55,90 75,20 110,15 C 140,11 160,45 190,65 C 220,83 250,88 300,90 L300,110 L15,110 Z"></path>
+                        <path class="chart-curve-line" d="M15,95 C 55,90 75,20 110,15 C 140,11 160,45 190,65 C 220,83 250,88 300,90"></path>
+
+                        <circle class="chart-now-dot" cx="15" cy="95" r="3"></circle>
+
+                        <text class="chart-now-label" x="19" y="18">Maintenant</text>
+                        <text class="chart-axis-label" x="105" y="12">Pic +45min</text>
+                        <text class="chart-axis-label" x="2" y="118">0h</text>
+                        <text class="chart-axis-label" x="145" y="118">+1h30</text>
+                        <text class="chart-axis-label" x="270" y="118">+3h</text>
+                    </svg>
+                </div>
+
+                <div class="impact-summary-grid">
+                    <div class="impact-stat">
+                        <div class="impact-stat-value">+45min</div>
+                        <div class="impact-stat-label">Pic glycémique</div>
+                    </div>
+                    <div class="impact-stat">
+                        <div class="impact-stat-value">Modéré</div>
+                        <div class="impact-stat-label">Impact insuline</div>
+                    </div>
+                    <div class="impact-stat">
+                        <div class="impact-stat-value">2h50</div>
+                        <div class="impact-stat-label">Digestion estimée</div>
+                    </div>
+                </div>
+
+                <div class="verdict-banner">
+                    <span class="verdict-icon">✅</span>
+                    <span class="verdict-text"><b>Favorable</b> — la charge glucidique arrive pile dans ta fenêtre post-effort, le stockage en graisse sera minimal.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-label">Impact sur la Glycémie & Récupération</div>
+            <div class="timing-row">
+                <span class="timing-time">12:30</span>
+                <span class="timing-desc">Déjeuner riche en glucides complexes</span>
+                <span class="timing-badge badge-optimal">Favorable</span>
+            </div>
+            <div class="timing-row">
+                <span class="timing-time">16:00</span>
+                <span class="timing-desc">Collation pré-entraînement (Glucides rapides)</span>
+                <span class="timing-badge badge-optimal">Optimal</span>
+            </div>
+            <div class="timing-row">
+                <span class="timing-time">21:00</span>
+                <span class="timing-desc">Dernier repas lourd (Risque de pic nocturne)</span>
+                <span class="timing-badge badge-warning">À ajuster</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================================================================
+         VUE 4 : PROFIL & COMMUNAUTÉ
+    ================================================================= -->
     <div id="view-profil" class="view-section">
-        <div class="whoop-module">
-            <div class="module-label">Configuration Gemini API</div>
-            <p style="color: var(--text-muted); font-size: 12px; margin-top: 6px; margin-bottom: 12px;">Entre ta clé API Google AI Studio.</p>
-            <input type="password" id="api-key-input" class="input-text" placeholder="Colle ta clé API ici...">
-            <button class="action-btn" id="save-key-btn" style="margin-top: 14px; padding: 12px;">Enregistrer la clé</button>
+
+        <div class="score-hero-card">
+            <div class="profile-avatar">LT</div>
+            <div class="score-title">Statut du Compte</div>
+            <div class="score-value" style="font-size:26px; color:var(--text-main);">Membre Fondateur</div>
+            <div class="score-subtext" style="color:var(--accent-green); text-transform:uppercase; letter-spacing:1px; font-weight:700;">● Abonnement Actif</div>
         </div>
+
+        <div class="module-card">
+            <div class="module-label">Objectifs</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label class="input-label">Objectif principal</label>
+                    <select class="select-goal">
+                        <option>Recomposition corporelle</option>
+                        <option>Prise de masse</option>
+                        <option>Perte de gras</option>
+                        <option>Maintien / Performance</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Poids cible (kg)</label>
+                    <input type="number" class="input-text" placeholder="78">
+                </div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Objectif calorique quotidien</label>
+                <input type="number" class="input-text" placeholder="2 400 kcal">
+            </div>
+
+            <div class="module-sublabel">Clé API Google Gemini (AI Studio)</div>
+            <div class="input-group">
+                <input type="password" id="api-key-input" class="input-text" placeholder="Colle ta clé API ici...">
+            </div>
+            <button class="action-btn" onclick="alert('Paramètres enregistrés localement !')">Enregistrer</button>
+        </div>
+
+        <div class="module-card">
+            <div class="module-label">Communauté Fuel Engine</div>
+
+            <div class="forum-post">
+                <div class="forum-header">
+                    <span class="forum-author">@Lucas_Fit</span>
+                    <span class="forum-time">Il y a 12min</span>
+                </div>
+                <div class="forum-content">Score de récupération à <b>91%</b> ce matin après avoir décalé mon dernier repas à 19h au lieu de 21h. Le simulateur avait raison sur l'impact du timing 👀</div>
+                <div class="forum-footer">
+                    <span class="forum-action">▲ 14</span>
+                    <span class="forum-action">💬 3 réponses</span>
+                </div>
+            </div>
+
+            <div class="forum-post">
+                <div class="forum-header">
+                    <span class="forum-author">@Sarah_K</span>
+                    <span class="forum-time">Il y a 47min</span>
+                </div>
+                <div class="forum-content">Quelqu'un a testé le scan photo sur un plat en sauce ? Curieuse de voir si l'estimation des lipides reste fiable.</div>
+                <div class="forum-footer">
+                    <span class="forum-action">▲ 6</span>
+                    <span class="forum-action">💬 1 réponse</span>
+                </div>
+            </div>
+
+            <div class="forum-post">
+                <div class="forum-header">
+                    <span class="forum-author">@Momo_Endurance</span>
+                    <span class="forum-time">Il y a 2h</span>
+                </div>
+                <div class="forum-content">HRV en hausse constante depuis que je surveille ma fenêtre anabolique. La courbe glycémique aide à comprendre pourquoi certains repas plombent le sommeil.</div>
+                <div class="forum-footer">
+                    <span class="forum-action">▲ 22</span>
+                    <span class="forum-action">💬 5 réponses</span>
+                </div>
+            </div>
+
+            <div class="forum-input-row">
+                <input type="text" class="input-text" placeholder="Partager une astuce ou une stat...">
+                <button class="forum-send-btn" onclick="alert('Publication envoyée à la communauté !')">Envoyer</button>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-label">Application</div>
+            <div class="raw-data-list">
+                <div class="raw-item"><span>Version</span><span>1.4.2</span></div>
+                <div class="raw-item"><span>Dernière synchronisation</span><span>Il y a 2min</span></div>
+                <div class="raw-item"><span>Stockage local utilisé</span><span>18.2 MB</span></div>
+                <div class="raw-item"><span>Membre depuis</span><span>Mars 2025</span></div>
+            </div>
+        </div>
+
+        <button class="logout-btn" onclick="alert('Déconnexion...')">Se déconnecter</button>
+
+        <div class="legal-footer">
+            <p>Fuel Engine © 2026 — Toutes données de santé stockées localement.<br>
+            <a href="#">Confidentialité</a> · <a href="#">Conditions d'utilisation</a> · <a href="#">Licences</a></p>
+        </div>
+
     </div>
 
-    <!-- NAVIGATION -->
+    <!-- ================================================================
+         NAVIGATION BASSE UNIQUE — pilote les 4 vues via data-view
+    ================================================================= -->
     <nav>
-        <div class="nav-link active" onclick="switchView('view-accueil')">Accueil</div>
-        <div class="nav-link" onclick="switchView('view-analyses')">Analyses</div>
-        <div class="nav-link" onclick="switchView('view-journal')">Journal</div>
-        <div class="nav-link" onclick="switchView('view-profil')">Profil</div>
+        <div class="nav-link active" data-view="accueil">Accueil</div>
+        <div class="nav-link" data-view="sante">Santé</div>
+        <div class="nav-link" data-view="coach">Coach IA</div>
+        <div class="nav-link" data-view="profil">Profil</div>
     </nav>
 
     <script>
-        const targets = { prot: 180, carbs: 250, fats: 70 };
-        let data = JSON.parse(localStorage.getItem('fuel_gemini_data')) || { calories: 0, prot: 0, carbs: 0, fats: 0 };
-        let currentImageBase64 = null;
-        let currentMimeType = null;
-
+        /* ============================================================
+           NAVIGATION SPA : une seule fonction pilote les 4 vues
+        ============================================================ */
         function switchView(viewId) {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-            if(viewId === 'view-accueil') document.querySelectorAll('.nav-link')[0].classList.add('active');
-            if(viewId === 'view-analyses') document.querySelectorAll('.nav-link')[1].classList.add('active');
-            if(viewId === 'view-journal') document.querySelectorAll('.nav-link')[2].classList.add('active');
-            if(viewId === 'view-profil') document.querySelectorAll('.nav-link')[3].classList.add('active');
+            document.querySelectorAll('.view-section').forEach(function (section) {
+                section.classList.remove('active');
+            });
+            document.getElementById('view-' + viewId).classList.add('active');
+
+            document.querySelectorAll('.nav-link').forEach(function (link) {
+                link.classList.toggle('active', link.dataset.view === viewId);
+            });
+
+            window.scrollTo(0, 0);
         }
 
-        function renderUI() {
-            document.getElementById('cal-display').innerHTML = `${data.calories.toLocaleString()} <span>kcal</span>`;
-            document.getElementById('prot-val').innerText = `${data.prot}g`;
-            document.getElementById('carbs-val').innerText = `${data.carbs}g`;
-            document.getElementById('fats-val').innerText = `${data.fats}g`;
-
-            let pPct = Math.min(100, Math.round((data.prot / targets.prot) * 100));
-            let cPct = Math.min(100, Math.round((data.carbs / targets.carbs) * 100));
-            let fPct = Math.min(100, Math.round((data.fats / targets.fats) * 100));
-
-            document.getElementById('prot-circle').style.strokeDashoffset = 100 - pPct;
-            document.getElementById('carbs-circle').style.strokeDashoffset = 100 - cPct;
-            document.getElementById('fats-circle').style.strokeDashoffset = 100 - fPct;
-
-            localStorage.setItem('fuel_gemini_data', JSON.stringify(data));
-        }
-
-        document.getElementById('save-key-btn').addEventListener('click', () => {
-            const key = document.getElementById('api-key-input').value.trim();
-            if(key) {
-                localStorage.setItem('gemini_api_key', key);
-                alert("Clé API enregistrée avec succès !");
-            }
+        document.querySelectorAll('.nav-link').forEach(function (link) {
+            link.addEventListener('click', function () {
+                switchView(link.dataset.view);
+            });
         });
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedKey = localStorage.getItem('gemini_api_key');
-            if(savedKey) document.getElementById('api-key-input').value = savedKey;
-            renderUI();
-        });
-
-        document.getElementById('camera-input').addEventListener('change', function(e) {
+        /* ============================================================
+           PAGE COACH IA : aperçu de la photo scannée
+        ============================================================ */
+        document.getElementById('camera-input').addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (file) {
-                currentMimeType = file.type || 'image/jpeg';
                 const reader = new FileReader();
-                reader.onload = function(uploadEvent) {
-                    const base64String = uploadEvent.target.result.split(',')[1];
-                    currentImageBase64 = base64String;
-
+                reader.onload = function (uploadEvent) {
                     const preview = document.getElementById('image-preview');
                     preview.src = uploadEvent.target.result;
                     preview.style.display = 'block';
-                    
-                    document.getElementById('send-ai-btn').style.display = 'block';
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        document.getElementById('send-ai-btn').addEventListener('click', async () => {
-            const apiKey = localStorage.getItem('gemini_api_key');
-            if(!apiKey) {
-                alert("Configure ta clé API dans l'onglet Profil !");
-                switchView('view-profil');
-                return;
-            }
+        /* ============================================================
+           PAGE COACH IA : déclenchement de la simulation d'impact
+           (le bloc IA réel — photo + commentaire -> prédiction de la
+           courbe glycémique — sera branché ici)
+        ============================================================ */
+        function runSimulation() {
+            const btn = document.getElementById('simulate-btn');
+            const result = document.getElementById('impact-result');
 
-            if(!currentImageBase64) return;
+            btn.classList.add('loading');
+            btn.textContent = 'Analyse en cours...';
+            btn.disabled = true;
 
-            document.getElementById('send-ai-btn').style.display = 'none';
-            document.getElementById('loading-text').style.display = 'block';
-
-            try {
-                // Utilisation du modèle actif gemini-2.5-flash
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [
-                                { text: "Analyse ce plat en photo. Estime les calories, les protéines (en g), les glucides (en g) et les lipides (en g). Réponds STRICTEMENT et UNIQUEMENT avec un objet JSON brut, sans balises markdown, sans texte autour, sous ce format exact : {\"calories\": 500, \"prot\": 30, \"carbs\": 50, \"fats\": 15}" },
-                                { inline_data: { mime_type: currentMimeType, data: currentImageBase64 } }
-                            ]
-                        }]
-                    })
-                });
-
-                const result = await response.json();
-                
-                if(result.error) {
-                    throw new Error(result.error.message || "Erreur renvoyée par l'API Google");
-                }
-
-                const rawText = result.candidates[0].content.parts[0].text;
-                const cleanJson = JSON.parse(rawText.replace(/```json/g, '').replace(/```/g, '').trim());
-
-                const mealCalories = Number(cleanJson.calories) > 0 ? Number(cleanJson.calories) : 450;
-                const mealProt = Number(cleanJson.prot) > 0 ? Number(cleanJson.prot) : 35;
-                const mealCarbs = Number(cleanJson.carbs) > 0 ? Number(cleanJson.carbs) : 40;
-                const mealFats = Number(cleanJson.fats) > 0 ? Number(cleanJson.fats) : 15;
-
-                data.calories += mealCalories;
-                data.prot += mealProt;
-                data.carbs += mealCarbs;
-                data.fats += mealFats;
-
-                renderUI();
-                alert(`Repas validé !\n+${mealCalories} kcal\nProtéines : +${mealProt}g`);
-                switchView('view-accueil');
-
-            } catch (error) {
-                console.error(error);
-                alert("Erreur : " + error.message);
-            } finally {
-                document.getElementById('loading-text').style.display = 'none';
-            }
-        });
-
-        document.getElementById('reset-day').addEventListener('click', () => {
-            if(confirm("Remettre la journée à zéro ?")) {
-                data = { calories: 0, prot: 0, carbs: 0, fats: 0 };
-                renderUI();
-            }
-        });
+            setTimeout(function () {
+                btn.classList.remove('loading');
+                btn.textContent = 'Relancer la simulation';
+                btn.disabled = false;
+                result.classList.add('visible');
+            }, 1200);
+        }
     </script>
 </body>
 </html>
