@@ -146,15 +146,8 @@
         }
 
         /* ============================================================
-           CARDS — macros + données brutes
+           CARDS — données brutes
         ============================================================ */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 0;
-        }
-
         .card {
             background-color: var(--card-bg);
             border-radius: 16px;
@@ -163,24 +156,79 @@
             border: 1px solid var(--border-color);
         }
 
-        .cards-grid .card {
+        /* ============================================================
+           ANNEAUX DE MACROS — 3 anneaux circulaires côte à côte,
+           juste sous l'Energy Score (structure Whoop)
+        ============================================================ */
+        .macro-rings-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .macro-ring-item {
+            flex: 1;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 14px 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
-            margin-bottom: 0;
-            padding: 16px 8px;
         }
 
-        .card-icon {
-            stroke: var(--color-accent);
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            width: 22px;
-            height: 22px;
+        .macro-ring-wrap {
+            position: relative;
+            width: 62px;
+            height: 62px;
             margin-bottom: 8px;
+        }
+
+        .macro-ring-wrap svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .macro-ring-track {
+            fill: none;
+            stroke: var(--border-color);
+            stroke-width: 6;
+        }
+
+        .macro-ring-circle {
+            fill: none;
+            stroke: var(--color-accent);
+            stroke-width: 6;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .macro-ring-value {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .macro-ring-title {
+            font-size: 9px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .macro-ring-target {
+            font-size: 9px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-top: 2px;
         }
 
         .card-title {
@@ -347,25 +395,48 @@
                 </div>
                 <div class="score-caption">Score Énergie du Jour</div>
 
-                <!-- Macros -->
-                <div class="cards-grid">
-                    <div class="card">
-                        <svg class="card-icon" viewBox="0 0 24 24"><path d="M12 2v20M5 8h14M5 16h14"></path></svg>
-                        <div class="card-title">Protéines</div>
-                        <div class="card-value">130g</div>
-                        <div class="card-label">/ 150g</div>
+                <!-- Anneaux de macros : Protides / Glucides / Lipides, côte à côte -->
+                <div class="macro-rings-row">
+                    <div class="macro-ring-item">
+                        <div class="macro-ring-wrap">
+                            <svg viewBox="0 0 64 64">
+                                <circle class="macro-ring-track" cx="32" cy="32" r="26"></circle>
+                                <circle class="macro-ring-circle" cx="32" cy="32" r="26"
+                                        stroke-dasharray="163.4"
+                                        stroke-dashoffset="21.2"></circle>
+                            </svg>
+                            <div class="macro-ring-value">130g</div>
+                        </div>
+                        <div class="macro-ring-title">Protéines</div>
+                        <div class="macro-ring-target">/ 150g</div>
                     </div>
-                    <div class="card">
-                        <svg class="card-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg>
-                        <div class="card-title">Glucides</div>
-                        <div class="card-value">190g</div>
-                        <div class="card-label">/ 220g</div>
+
+                    <div class="macro-ring-item">
+                        <div class="macro-ring-wrap">
+                            <svg viewBox="0 0 64 64">
+                                <circle class="macro-ring-track" cx="32" cy="32" r="26"></circle>
+                                <circle class="macro-ring-circle" cx="32" cy="32" r="26"
+                                        stroke-dasharray="163.4"
+                                        stroke-dashoffset="22.9"></circle>
+                            </svg>
+                            <div class="macro-ring-value">190g</div>
+                        </div>
+                        <div class="macro-ring-title">Glucides</div>
+                        <div class="macro-ring-target">/ 220g</div>
                     </div>
-                    <div class="card">
-                        <svg class="card-icon" viewBox="0 0 24 24"><path d="M12 3c4 4 6 7 6 10a6 6 0 1 1-12 0c0-3 2-6 6-10z"></path></svg>
-                        <div class="card-title">Lipides</div>
-                        <div class="card-value">55g</div>
-                        <div class="card-label">/ 70g</div>
+
+                    <div class="macro-ring-item">
+                        <div class="macro-ring-wrap">
+                            <svg viewBox="0 0 64 64">
+                                <circle class="macro-ring-track" cx="32" cy="32" r="26"></circle>
+                                <circle class="macro-ring-circle" cx="32" cy="32" r="26"
+                                        stroke-dasharray="163.4"
+                                        stroke-dashoffset="34.3"></circle>
+                            </svg>
+                            <div class="macro-ring-value">55g</div>
+                        </div>
+                        <div class="macro-ring-title">Lipides</div>
+                        <div class="macro-ring-target">/ 70g</div>
                     </div>
                 </div>
 
