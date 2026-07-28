@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fuel Engine</title>
+    <title>Fuel Engine - Accueil</title>
     <style>
         /* ============================================================
-           1. VARIABLES & RESET GLOBAL
+           NOUVELLE DIRECTION ARTISTIQUE — palette
         ============================================================ */
         :root {
-            --bg-color: #000000;
-            --card-bg: #111318;
-            --card-border: #1F242D;
-            --text-main: #FFFFFF;
-            --text-muted: #8A94A6;
-            --accent-green: #00E676;
-            --accent-blue: #0066FF;
-            --accent-orange: #FF3D00;
+            --bg-app: #000000;
+            --text-primary: #FFFFFF;
+            --text-secondary: #9E9E9E;
+            --color-accent: #76FF03;
+            --card-bg: #212121;
+            --border-color: #333;
         }
 
         * {
@@ -27,870 +25,396 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            padding: 12px 16px 100px 16px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
         /* ============================================================
-           2. SPLASH SCREEN
+           STRUCTURE & CENTRAGE RIGOUREUX
         ============================================================ */
-        #splash-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #000;
+        body, #app-root {
+            background-color: var(--bg-app);
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
-            animation: fadeOutSplash 0.5s ease 1.5s forwards;
-        }
-        .splash-logo {
-            font-size: 18px;
-            letter-spacing: 4px;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: #FFF;
-            animation: pulseLogo 1s infinite alternate;
-        }
-        @keyframes pulseLogo {
-            0% { transform: scale(0.95); opacity: 0.7; }
-            100% { transform: scale(1.05); opacity: 1; }
-        }
-        @keyframes fadeOutSplash {
-            to { opacity: 0; visibility: hidden; }
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            margin: 0;
         }
 
-        /* ============================================================
-           3. TOP BAR (commune aux 4 pages)
-        ============================================================ */
-        .top-nav {
+        .accueil-screen {
+            width: 100%;
+            max-width: 430px;
+            height: 100%;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            background-color: var(--bg-app);
+            position: relative;
+        }
+
+        /* Barre du haut : conservée sobre, alignée sur la nouvelle palette */
+        .top-bar {
+            display: flex;
+            justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
-            padding-top: 6px;
+            padding: 16px 20px 0 20px;
         }
         .date-pill {
             background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
+            border: 1px solid var(--border-color);
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 600;
             letter-spacing: 0.5px;
+            color: var(--text-secondary);
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .date-pill span { color: var(--accent-green); }
+        .date-pill span { color: var(--color-accent); }
 
-        /* ============================================================
-           4. GESTION DES VUES (SPA)
-        ============================================================ */
-        .view-section { display: none; }
-        .view-section.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Zone de contenu scrollable sous le score */
+        .screen-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 20px 24px 20px;
         }
 
         /* ============================================================
-           5. COMPOSANTS PARTAGÉS (hero, cards, listes de données)
+           ENERGY SCORE — anneau de progression parfaitement centré
         ============================================================ */
-        .score-hero-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 24px;
-            text-align: center;
-            margin-bottom: 12px;
+        .score-display-wrapper {
             position: relative;
-        }
-        .score-title {
-            font-size: 10px;
-            letter-spacing: 2px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .score-value {
-            font-size: 48px;
-            font-weight: 800;
-            letter-spacing: -1px;
-            color: var(--accent-green);
-        }
-        .score-value span { font-size: 18px; color: var(--text-muted); }
-        .score-subtext {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 6px;
-            font-weight: 600;
+            width: 200px;
+            height: 200px;
+            margin: 40px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .module-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 16px 20px;
-            margin-bottom: 12px;
-        }
-        .module-label {
-            font-size: 10px; letter-spacing: 1.5px; color: var(--text-muted);
-            text-transform: uppercase; margin-bottom: 8px; font-weight: 700;
-        }
-        .module-label-row {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 8px;
-        }
-        .module-label-row .module-label { margin-bottom: 0; }
-        .module-tag {
-            font-size: 9px; font-weight: 800; letter-spacing: 1px;
-            color: var(--accent-blue); text-transform: uppercase;
-        }
-        .module-sublabel {
-            font-size: 10px; letter-spacing: 1px; color: var(--text-muted);
-            text-transform: uppercase; margin: 4px 0 10px 0; font-weight: 700;
-            padding-top: 10px; border-top: 1px solid #161A22;
+        .score-display-wrapper svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
         }
 
-        .action-btn {
-            background-color: var(--accent-green); color: #000;
-            border: none; width: 100%; padding: 16px; border-radius: 16px;
-            font-size: 12px; font-weight: 800; letter-spacing: 1.5px;
-            text-transform: uppercase; cursor: pointer;
-            margin-bottom: 12px; display: block; text-align: center;
-        }
-        .action-btn:disabled { background-color: #1C222D; color: #555E6D; cursor: default; }
-        .action-btn.loading { background-color: #1C222D; color: var(--text-muted); }
-        .action-btn.secondary {
-            background-color: #0A0D12; color: var(--text-main); border: 1px solid var(--card-border);
+        .progress-ring-track {
+            fill: none;
+            stroke: var(--card-bg);
+            stroke-width: 12;
         }
 
-        .raw-data-list {
-            font-size: 13px; color: var(--text-muted);
-            display: flex; flex-direction: column; gap: 6px;
+        .progress-ring-circle {
+            fill: none;
+            stroke: var(--color-accent);
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
         }
-        .raw-item {
-            display: flex; justify-content: space-between;
-            padding: 6px 0; border-bottom: 1px solid #161A22;
-        }
-        .raw-item:last-child { border-bottom: none; }
-        .raw-item span:last-child { color: #FFF; font-weight: 600; }
 
-        /* Anneaux SVG (utilisés en page Accueil ET Santé) */
-        .rings-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-        .ring-box {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 16px 8px;
+        .energy-score-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            width: 100%;
         }
-        .ring-svg-wrap {
-            position: relative;
-            width: 60px;
-            height: 60px;
+        .energy-score-value .value {
+            font-size: 64px;
+            font-weight: 800;
+            color: var(--color-accent);
+            line-height: 1;
+        }
+        .energy-score-value .unit {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--color-accent);
+            margin-top: 2px;
+        }
+        .score-caption {
+            text-align: center;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 700;
+            margin-top: -24px;
             margin-bottom: 8px;
         }
-        .ring-svg-wrap svg {
-            transform: rotate(-90deg);
-            width: 100%; height: 100%;
-        }
-        .ring-svg-wrap circle {
-            fill: none;
-            stroke-width: 5;
-        }
-        .bg-track { stroke: #1C222D; }
-        .progress-track { stroke-linecap: round; }
-        .ring-inner-text {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 700;
-        }
-        .ring-title {
-            font-size: 9px; letter-spacing: 1px; color: var(--text-muted);
-            text-transform: uppercase; font-weight: 600;
-        }
-
-        /* Champs de saisie (utilisés en page Profil) */
-        .input-group { margin-bottom: 12px; }
-        .input-group:last-child { margin-bottom: 0; }
-        .input-label {
-            font-size: 11px; color: var(--text-muted); margin-bottom: 6px; display: block; font-weight: 600;
-        }
-        .input-text {
-            width: 100%; background-color: #0A0D12; border: 1px solid var(--card-border);
-            border-radius: 12px; padding: 12px; color: #FFF; font-size: 14px; outline: none;
-            font-family: inherit;
-        }
-        .input-text:focus { border-color: var(--accent-green); }
-        .input-text::placeholder { color: #4C5566; }
-        .input-row { display: flex; gap: 10px; }
-        .input-row .input-group { flex: 1; }
-        .select-goal {
-            width: 100%; background-color: #0A0D12; border: 1px solid var(--card-border);
-            border-radius: 12px; padding: 12px; color: #FFF; font-size: 14px; outline: none;
-            font-family: inherit; appearance: none; -webkit-appearance: none;
-        }
-
-        /* Bandeau bas fixe */
-        nav {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background-color: #0A0C10; border-top: 1px solid #1A212D;
-            display: flex; justify-content: space-around;
-            padding: 14px 0 24px 0; z-index: 100;
-        }
-        .nav-link {
-            text-align: center; color: #555E6D; font-size: 9px;
-            letter-spacing: 1px; text-transform: uppercase; font-weight: 700;
-            cursor: pointer;
-        }
-        .nav-link.active { color: var(--accent-green); }
 
         /* ============================================================
-           6. PAGE ACCUEIL — spécifique
+           CARDS — macros + données brutes
         ============================================================ */
-        /* (les rings-grid, module-card, raw-data-list sont déjà mutualisés ci-dessus) */
-
-        /* ============================================================
-           7. PAGE SANTÉ & RÉCUPÉRATION — spécifique
-        ============================================================ */
-        .sleep-bar {
-            display: flex;
-            width: 100%;
-            height: 10px;
-            border-radius: 6px;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-        .sleep-seg-deep { background-color: var(--accent-blue); }
-        .sleep-seg-light { background-color: #3D4A66; }
-        .sleep-seg-rem { background-color: var(--accent-green); }
-        .sleep-legend {
-            display: flex;
-            justify-content: space-between;
-            font-size: 10px;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-        .sleep-legend-item { display: flex; align-items: center; gap: 5px; }
-        .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
-
-        .metric-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 0; border-bottom: 1px solid #161A22;
-        }
-        .metric-row:last-child { border-bottom: none; }
-        .metric-label { font-size: 13px; color: var(--text-muted); }
-        .metric-value-wrap { display: flex; align-items: center; gap: 6px; }
-        .metric-value { font-size: 14px; font-weight: 700; color: #FFF; }
-        .trend-up { color: var(--accent-green); font-size: 11px; }
-        .trend-down { color: var(--accent-orange); font-size: 11px; }
-        .trend-flat { color: var(--text-muted); font-size: 11px; }
-
-        /* ============================================================
-           8. PAGE COACH IA & SIMULATEUR — spécifique
-        ============================================================ */
-        .camera-wrapper {
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; padding: 24px 16px;
-            border: 2px dashed var(--card-border); border-radius: 14px;
-            margin-bottom: 12px; text-align: center; background-color: #0A0D12;
-        }
-        .camera-wrapper label {
-            background-color: var(--accent-blue); color: #FFF;
-            padding: 12px 20px; border-radius: 12px; font-size: 11px;
-            font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-            cursor: pointer; display: inline-block;
-        }
-        input[type="file"] { display: none; }
-        .preview-img {
-            width: 100%; max-height: 160px; object-fit: cover;
-            border-radius: 10px; margin-bottom: 10px; display: none;
-        }
-        .input-comment {
-            width: 100%; background-color: #0A0D12; border: 1px solid var(--card-border);
-            border-radius: 12px; padding: 12px; color: #FFF; font-size: 13px; outline: none;
-            margin-bottom: 12px; resize: none; height: 70px;
-            font-family: inherit;
-        }
-        .input-comment::placeholder { color: #4C5566; }
-
-        .impact-result { display: none; }
-        .impact-result.visible { display: block; animation: fadeIn 0.3s ease; }
-        .impact-chart-wrap {
-            position: relative;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        .impact-chart-wrap svg { width: 100%; height: auto; display: block; }
-        .chart-grid-line { stroke: #1C222D; stroke-width: 1; }
-        .chart-now-line { stroke: #3D4A66; stroke-width: 1; stroke-dasharray: 3 3; }
-        .chart-curve-fill { fill: url(#curveGradient); }
-        .chart-curve-line { fill: none; stroke: var(--accent-orange); stroke-width: 2; }
-        .chart-now-dot { fill: var(--text-main); }
-        .chart-axis-label {
-            fill: var(--text-muted); font-size: 8px; font-weight: 700;
-            font-family: -apple-system, sans-serif;
-        }
-        .chart-now-label {
-            fill: var(--text-muted); font-size: 8px; font-weight: 800;
-            font-family: -apple-system, sans-serif; text-transform: uppercase;
-        }
-        .impact-summary-grid {
+        .cards-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 4px;
+            gap: 12px;
+            margin-bottom: 0;
         }
-        .impact-stat {
-            background-color: #0A0D12;
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 10px 6px;
-            text-align: center;
-        }
-        .impact-stat-value { font-size: 15px; font-weight: 800; color: #FFF; }
-        .impact-stat-label {
-            font-size: 8px; color: var(--text-muted); text-transform: uppercase;
-            letter-spacing: 0.5px; font-weight: 700; margin-top: 3px;
-        }
-        .verdict-banner {
-            display: flex; align-items: center; gap: 10px;
-            padding: 12px 14px; border-radius: 12px; margin-top: 10px;
-            background-color: rgba(0, 230, 118, 0.1);
-        }
-        .verdict-banner.warning { background-color: rgba(255, 61, 0, 0.1); }
-        .verdict-icon { font-size: 16px; }
-        .verdict-text { font-size: 12px; font-weight: 600; color: #FFF; line-height: 1.4; }
-        .verdict-text b { color: var(--accent-green); }
-        .verdict-banner.warning .verdict-text b { color: var(--accent-orange); }
 
-        .timing-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 0; border-bottom: 1px solid #161A22;
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
         }
-        .timing-row:last-child { border-bottom: none; }
-        .timing-time { font-size: 12px; color: var(--text-muted); font-weight: 700; width: 50px; flex-shrink: 0; }
-        .timing-desc { font-size: 13px; color: #FFF; flex-grow: 1; padding-right: 8px; }
-        .timing-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; flex-shrink: 0; }
-        .badge-optimal { background-color: rgba(0, 230, 118, 0.15); color: var(--accent-green); }
-        .badge-warning { background-color: rgba(255, 61, 0, 0.15); color: var(--accent-orange); }
+
+        .cards-grid .card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 0;
+            padding: 16px 8px;
+        }
+
+        .card-icon {
+            stroke: var(--color-accent);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            width: 22px;
+            height: 22px;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            color: var(--text-primary);
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .card-value {
+            color: var(--text-primary);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .card-label {
+            color: var(--text-secondary);
+            font-size: 9px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* Card standard (bloc "Données brutes") */
+        .card-full { margin-top: 16px; }
+        .card-full .card-title {
+            margin-bottom: 12px;
+        }
+        .raw-data-row {
+            display: flex; justify-content: space-between;
+            padding: 8px 0; border-bottom: 1px solid var(--border-color);
+        }
+        .raw-data-row:last-child { border-bottom: none; }
+        .raw-data-row .card-label { color: var(--text-secondary); font-size: 12px; text-transform: none; letter-spacing: 0; font-weight: 500; }
+        .raw-data-row .card-value { font-size: 13px; }
 
         /* ============================================================
-           9. PAGE PROFIL & COMMUNAUTÉ — spécifique
+           BOUTON SCANNER
         ============================================================ */
-        .profile-avatar {
-            width: 52px; height: 52px; border-radius: 50%;
-            background-color: #0A0D12; border: 1px solid var(--card-border);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; font-weight: 800; color: var(--accent-green);
-            margin: 0 auto 12px auto;
+        .btn-scanner {
+            background-color: var(--text-primary);
+            color: var(--bg-app);
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 12px;
+            padding: 16px;
+            width: 100%;
+            text-align: center;
+            border: none;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .forum-post {
-            background-color: #0A0D12;
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 12px 14px;
-            margin-bottom: 10px;
-        }
-        .forum-post:last-child { margin-bottom: 0; }
-        .forum-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 6px;
-        }
-        .forum-author { font-size: 12px; font-weight: 700; color: #FFF; }
-        .forum-time { font-size: 10px; color: var(--text-muted); }
-        .forum-content { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-        .forum-content b { color: var(--text-main); }
-        .forum-footer {
-            display: flex; align-items: center; gap: 14px; margin-top: 8px;
-        }
-        .forum-action {
-            font-size: 10px; color: var(--text-muted); font-weight: 700;
-            display: flex; align-items: center; gap: 4px; cursor: pointer;
-        }
-        .forum-input-row {
-            display: flex; gap: 8px; margin-top: 12px;
-        }
-        .forum-input-row .input-text { flex-grow: 1; }
-        .forum-send-btn {
-            background-color: var(--accent-green); color: #000; border: none;
-            border-radius: 12px; padding: 0 16px; font-size: 11px; font-weight: 800;
-            text-transform: uppercase; cursor: pointer;
+        /* ============================================================
+           NAVIGATION BASSE
+        ============================================================ */
+        .bottom-nav {
+            background-color: var(--bg-app);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 14px 0 20px 0;
+            flex-shrink: 0;
         }
 
-        .legal-footer { text-align: center; padding: 16px 8px 4px 8px; }
-        .legal-footer p { font-size: 10px; color: #444C5A; line-height: 1.6; }
-        .legal-footer a { color: #5A6478; text-decoration: underline; }
+        .nav-icon {
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 9px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .nav-icon svg {
+            width: 20px; height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
 
-        .logout-btn {
-            background: none; border: none; width: 100%; padding: 12px;
-            font-size: 11px; font-weight: 700; letter-spacing: 1px;
-            text-transform: uppercase; color: var(--accent-orange); cursor: pointer;
+        .nav-icon.active { color: var(--color-accent); }
+
+        /* ============================================================
+           LOADER — splash de chargement, parfaitement centré
+        ============================================================ */
+        .loader-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-app);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .loader-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-spinner {
+            border: 4px solid var(--card-bg);
+            border-top: 4px solid var(--color-accent);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen">
-        <div class="splash-logo">Fuel Engine ⚡</div>
+    <!-- Loader de chargement, centré via top:50%/left:50%/translate -->
+    <div class="loader-overlay" id="loader-overlay">
+        <div class="loader-spinner"></div>
     </div>
 
-    <div class="top-nav">
-        <div class="date-pill">AUJOURD'HUI <span>●</span></div>
-    </div>
+    <div id="app-root">
+        <div class="accueil-screen">
 
-    <!-- ================================================================
-         VUE 1 : ACCUEIL
-    ================================================================= -->
-    <div id="view-accueil" class="view-section active">
+            <div class="top-bar">
+                <div class="date-pill">AUJOURD'HUI <span>●</span></div>
+            </div>
 
-        <div class="score-hero-card">
-            <div class="score-title">Score Énergie du Jour</div>
-            <div class="score-value">88<span>%</span></div>
-        </div>
+            <div class="screen-content">
 
-        <div class="rings-grid">
-            <div class="ring-box">
-                <div class="ring-svg-wrap">
-                    <svg viewBox="0 0 36 36">
-                        <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
-                        <circle class="progress-track" cx="18" cy="18" r="15.9155" stroke="#0066FF" stroke-dasharray="100" stroke-dashoffset="30"></circle>
+                <!-- Energy Score : anneau de progression rigoureusement centré -->
+                <div class="score-display-wrapper">
+                    <svg viewBox="0 0 200 200">
+                        <circle class="progress-ring-track" cx="100" cy="100" r="88"></circle>
+                        <circle class="progress-ring-circle" cx="100" cy="100" r="88"
+                                stroke-dasharray="552.9"
+                                stroke-dashoffset="66.3"></circle>
                     </svg>
-                    <div class="ring-inner-text">130g</div>
-                </div>
-                <div class="ring-title">Protéines</div>
-            </div>
-
-            <div class="ring-box">
-                <div class="ring-svg-wrap">
-                    <svg viewBox="0 0 36 36">
-                        <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
-                        <circle class="progress-track" cx="18" cy="18" r="15.9155" stroke="#00E676" stroke-dasharray="100" stroke-dashoffset="45"></circle>
-                    </svg>
-                    <div class="ring-inner-text">190g</div>
-                </div>
-                <div class="ring-title">Glucides</div>
-            </div>
-
-            <div class="ring-box">
-                <div class="ring-svg-wrap">
-                    <svg viewBox="0 0 36 36">
-                        <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
-                        <circle class="progress-track" cx="18" cy="18" r="15.9155" stroke="#FF3D00" stroke-dasharray="100" stroke-dashoffset="60"></circle>
-                    </svg>
-                    <div class="ring-inner-text">55g</div>
-                </div>
-                <div class="ring-title">Lipides</div>
-            </div>
-        </div>
-
-        <button class="action-btn" onclick="alert('Ouverture de l\'appareil photo + bloc commentaire IA')">📷 Scanner un repas</button>
-
-        <div class="module-card">
-            <div class="module-label">Données Brutes & Historique</div>
-            <div class="raw-data-list">
-                <div class="raw-item"><span>Calories totales</span><span>2,140 kcal</span></div>
-                <div class="raw-item"><span>Eau consommée</span><span>2.4 L</span></div>
-                <div class="raw-item"><span>Repas enregistrés</span><span>3 / 4</span></div>
-                <div class="raw-item"><span>Index glycémique moyen</span><span>Bas</span></div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- ================================================================
-         VUE 2 : SANTÉ & RÉCUPÉRATION
-    ================================================================= -->
-    <div id="view-sante" class="view-section">
-
-        <div class="score-hero-card">
-            <div class="score-title">Score de Récupération</div>
-            <div class="score-value">76<span>%</span></div>
-            <div class="score-subtext">Corps prêt pour une charge modérée à élevée</div>
-        </div>
-
-        <div class="rings-grid">
-            <div class="ring-box">
-                <div class="ring-svg-wrap">
-                    <svg viewBox="0 0 36 36">
-                        <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
-                        <circle class="progress-track" cx="18" cy="18" r="15.9155" stroke="#0066FF" stroke-dasharray="100" stroke-dashoffset="18"></circle>
-                    </svg>
-                    <div class="ring-inner-text">7h42</div>
-                </div>
-                <div class="ring-title">Sommeil</div>
-            </div>
-
-            <div class="ring-box">
-                <div class="ring-svg-wrap">
-                    <svg viewBox="0 0 36 36">
-                        <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
-                        <circle class="progress-track" cx="18" cy="18" r="15.9155" stroke="#00E676" stroke-dasharray="100" stroke-dashoffset="35"></circle>
-                    </svg>
-                    <div class="ring-inner-text">62ms</div>
-                </div>
-                <div class="ring-title">HRV</div>
-            </div>
-
-            <div class="ring-box">
-                <div class="ring-svg-wrap">
-                    <svg viewBox="0 0 36 36">
-                        <circle class="bg-track" cx="18" cy="18" r="15.9155"></circle>
-                        <circle class="progress-track" cx="18" cy="18" r="15.9155" stroke="#FF3D00" stroke-dasharray="100" stroke-dashoffset="55"></circle>
-                    </svg>
-                    <div class="ring-inner-text">48bpm</div>
-                </div>
-                <div class="ring-title">FC Repos</div>
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-label">Répartition du Sommeil</div>
-            <div class="sleep-bar">
-                <div class="sleep-seg-deep" style="width: 22%;"></div>
-                <div class="sleep-seg-light" style="width: 56%;"></div>
-                <div class="sleep-seg-rem" style="width: 22%;"></div>
-            </div>
-            <div class="sleep-legend">
-                <div class="sleep-legend-item"><span class="legend-dot" style="background-color:var(--accent-blue);"></span>Profond 1h42</div>
-                <div class="sleep-legend-item"><span class="legend-dot" style="background-color:#3D4A66;"></span>Léger 4h20</div>
-                <div class="sleep-legend-item"><span class="legend-dot" style="background-color:var(--accent-green);"></span>Paradoxal 1h40</div>
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-label">Tendances (vs moyenne 7j)</div>
-            <div class="metric-row">
-                <span class="metric-label">Variabilité cardiaque (HRV)</span>
-                <div class="metric-value-wrap">
-                    <span class="metric-value">62 ms</span>
-                    <span class="trend-up">▲ 8%</span>
-                </div>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">Fréquence cardiaque au repos</span>
-                <div class="metric-value-wrap">
-                    <span class="metric-value">48 bpm</span>
-                    <span class="trend-down">▼ 3%</span>
-                </div>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">Fréquence respiratoire</span>
-                <div class="metric-value-wrap">
-                    <span class="metric-value">14.2 rpm</span>
-                    <span class="trend-flat">■ stable</span>
-                </div>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">SpO2 moyen</span>
-                <div class="metric-value-wrap">
-                    <span class="metric-value">98%</span>
-                    <span class="trend-flat">■ stable</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-label">Données Brutes</div>
-            <div class="raw-data-list">
-                <div class="raw-item"><span>Température cutanée</span><span>+0.2°C</span></div>
-                <div class="raw-item"><span>Efficacité du sommeil</span><span>91%</span></div>
-                <div class="raw-item"><span>Réveils nocturnes</span><span>2</span></div>
-                <div class="raw-item"><span>Charge de la veille</span><span>Modérée</span></div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- ================================================================
-         VUE 3 : COACH IA & SIMULATEUR
-    ================================================================= -->
-    <div id="view-coach" class="view-section">
-
-        <div class="score-hero-card">
-            <div class="score-title">Fenêtre Anabolique & Timing</div>
-            <div class="score-value" style="font-size:32px; color:var(--accent-blue);">Optimal (+2h)</div>
-            <div class="score-subtext">Pic d'insuline idéal post-effort détecté</div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-label-row">
-                <div class="module-label">Simulateur d'Impact Métabolique</div>
-                <div class="module-tag">IA</div>
-            </div>
-
-            <div class="camera-wrapper">
-                <img id="image-preview" class="preview-img" alt="Aperçu plat">
-                <label for="camera-input">📸 Scanner le plat</label>
-                <input type="file" id="camera-input" accept="image/*" capture="environment">
-            </div>
-
-            <textarea class="input-comment" id="ai-comment" placeholder="Ajoute un contexte pour l'IA (ex: 'Pris juste après une séance lourde de jambes, moitié de sauce')..."></textarea>
-
-            <button class="action-btn" id="simulate-btn" onclick="runSimulation()">Lancer la simulation d'impact</button>
-
-            <div class="impact-result" id="impact-result">
-                <div class="impact-chart-wrap">
-                    <svg viewBox="0 0 300 120" preserveAspectRatio="none">
-                        <defs>
-                            <linearGradient id="curveGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stop-color="#FF3D00" stop-opacity="0.35"/>
-                                <stop offset="100%" stop-color="#FF3D00" stop-opacity="0"/>
-                            </linearGradient>
-                        </defs>
-                        <line class="chart-grid-line" x1="0" y1="30" x2="300" y2="30"></line>
-                        <line class="chart-grid-line" x1="0" y1="60" x2="300" y2="60"></line>
-                        <line class="chart-grid-line" x1="0" y1="90" x2="300" y2="90"></line>
-                        <line class="chart-now-line" x1="15" y1="10" x2="15" y2="105"></line>
-
-                        <path class="chart-curve-fill" d="M15,95 C 55,90 75,20 110,15 C 140,11 160,45 190,65 C 220,83 250,88 300,90 L300,110 L15,110 Z"></path>
-                        <path class="chart-curve-line" d="M15,95 C 55,90 75,20 110,15 C 140,11 160,45 190,65 C 220,83 250,88 300,90"></path>
-
-                        <circle class="chart-now-dot" cx="15" cy="95" r="3"></circle>
-
-                        <text class="chart-now-label" x="19" y="18">Maintenant</text>
-                        <text class="chart-axis-label" x="105" y="12">Pic +45min</text>
-                        <text class="chart-axis-label" x="2" y="118">0h</text>
-                        <text class="chart-axis-label" x="145" y="118">+1h30</text>
-                        <text class="chart-axis-label" x="270" y="118">+3h</text>
-                    </svg>
-                </div>
-
-                <div class="impact-summary-grid">
-                    <div class="impact-stat">
-                        <div class="impact-stat-value">+45min</div>
-                        <div class="impact-stat-label">Pic glycémique</div>
+                    <div class="energy-score-value">
+                        <span class="value">88</span>
+                        <span class="unit">% ÉNERGIE</span>
                     </div>
-                    <div class="impact-stat">
-                        <div class="impact-stat-value">Modéré</div>
-                        <div class="impact-stat-label">Impact insuline</div>
+                </div>
+                <div class="score-caption">Score Énergie du Jour</div>
+
+                <!-- Macros -->
+                <div class="cards-grid">
+                    <div class="card">
+                        <svg class="card-icon" viewBox="0 0 24 24"><path d="M12 2v20M5 8h14M5 16h14"></path></svg>
+                        <div class="card-title">Protéines</div>
+                        <div class="card-value">130g</div>
+                        <div class="card-label">/ 150g</div>
                     </div>
-                    <div class="impact-stat">
-                        <div class="impact-stat-value">2h50</div>
-                        <div class="impact-stat-label">Digestion estimée</div>
+                    <div class="card">
+                        <svg class="card-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg>
+                        <div class="card-title">Glucides</div>
+                        <div class="card-value">190g</div>
+                        <div class="card-label">/ 220g</div>
+                    </div>
+                    <div class="card">
+                        <svg class="card-icon" viewBox="0 0 24 24"><path d="M12 3c4 4 6 7 6 10a6 6 0 1 1-12 0c0-3 2-6 6-10z"></path></svg>
+                        <div class="card-title">Lipides</div>
+                        <div class="card-value">55g</div>
+                        <div class="card-label">/ 70g</div>
                     </div>
                 </div>
 
-                <div class="verdict-banner">
-                    <span class="verdict-icon">✅</span>
-                    <span class="verdict-text"><b>Favorable</b> — la charge glucidique arrive pile dans ta fenêtre post-effort, le stockage en graisse sera minimal.</span>
+                <!-- Bouton scanner -->
+                <button class="btn-scanner" style="margin-top:16px;" onclick="alert('Ouverture de l\'appareil photo + bloc commentaire IA')">
+                    📷 Scanner un repas
+                </button>
+
+                <!-- Données brutes -->
+                <div class="card card-full">
+                    <div class="card-title">Données Brutes & Historique</div>
+                    <div class="raw-data-row"><span class="card-label">Calories totales</span><span class="card-value">2,140 kcal</span></div>
+                    <div class="raw-data-row"><span class="card-label">Eau consommée</span><span class="card-value">2.4 L</span></div>
+                    <div class="raw-data-row"><span class="card-label">Repas enregistrés</span><span class="card-value">3 / 4</span></div>
+                    <div class="raw-data-row"><span class="card-label">Index glycémique moyen</span><span class="card-value">Bas</span></div>
                 </div>
-            </div>
-        </div>
 
-        <div class="module-card">
-            <div class="module-label">Impact sur la Glycémie & Récupération</div>
-            <div class="timing-row">
-                <span class="timing-time">12:30</span>
-                <span class="timing-desc">Déjeuner riche en glucides complexes</span>
-                <span class="timing-badge badge-optimal">Favorable</span>
             </div>
-            <div class="timing-row">
-                <span class="timing-time">16:00</span>
-                <span class="timing-desc">Collation pré-entraînement (Glucides rapides)</span>
-                <span class="timing-badge badge-optimal">Optimal</span>
-            </div>
-            <div class="timing-row">
-                <span class="timing-time">21:00</span>
-                <span class="timing-desc">Dernier repas lourd (Risque de pic nocturne)</span>
-                <span class="timing-badge badge-warning">À ajuster</span>
-            </div>
-        </div>
 
+            <!-- Navigation basse -->
+            <nav class="bottom-nav">
+                <div class="nav-icon active">
+                    <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9"></path><path d="M5 10v10h14V10"></path></svg>
+                    Accueil
+                </div>
+                <div class="nav-icon">
+                    <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"></path></svg>
+                    Santé
+                </div>
+                <div class="nav-icon">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9 10h.01M15 10h.01M9 15c.83.67 1.87 1 3 1s2.17-.33 3-1"></path></svg>
+                    Coach IA
+                </div>
+                <div class="nav-icon">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 4-6 8-6s8 2 8 6"></path></svg>
+                    Profil
+                </div>
+            </nav>
+
+        </div>
     </div>
-
-    <!-- ================================================================
-         VUE 4 : PROFIL & COMMUNAUTÉ
-    ================================================================= -->
-    <div id="view-profil" class="view-section">
-
-        <div class="score-hero-card">
-            <div class="profile-avatar">LT</div>
-            <div class="score-title">Statut du Compte</div>
-            <div class="score-value" style="font-size:26px; color:var(--text-main);">Membre Fondateur</div>
-            <div class="score-subtext" style="color:var(--accent-green); text-transform:uppercase; letter-spacing:1px; font-weight:700;">● Abonnement Actif</div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-label">Objectifs</div>
-            <div class="input-row">
-                <div class="input-group">
-                    <label class="input-label">Objectif principal</label>
-                    <select class="select-goal">
-                        <option>Recomposition corporelle</option>
-                        <option>Prise de masse</option>
-                        <option>Perte de gras</option>
-                        <option>Maintien / Performance</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Poids cible (kg)</label>
-                    <input type="number" class="input-text" placeholder="78">
-                </div>
-            </div>
-            <div class="input-group">
-                <label class="input-label">Objectif calorique quotidien</label>
-                <input type="number" class="input-text" placeholder="2 400 kcal">
-            </div>
-
-            <div class="module-sublabel">Clé API Google Gemini (AI Studio)</div>
-            <div class="input-group">
-                <input type="password" id="api-key-input" class="input-text" placeholder="Colle ta clé API ici...">
-            </div>
-            <button class="action-btn" onclick="alert('Paramètres enregistrés localement !')">Enregistrer</button>
-        </div>
-
-        <div class="module-card">
-            <div class="module-label">Communauté Fuel Engine</div>
-
-            <div class="forum-post">
-                <div class="forum-header">
-                    <span class="forum-author">@Lucas_Fit</span>
-                    <span class="forum-time">Il y a 12min</span>
-                </div>
-                <div class="forum-content">Score de récupération à <b>91%</b> ce matin après avoir décalé mon dernier repas à 19h au lieu de 21h. Le simulateur avait raison sur l'impact du timing 👀</div>
-                <div class="forum-footer">
-                    <span class="forum-action">▲ 14</span>
-                    <span class="forum-action">💬 3 réponses</span>
-                </div>
-            </div>
-
-            <div class="forum-post">
-                <div class="forum-header">
-                    <span class="forum-author">@Sarah_K</span>
-                    <span class="forum-time">Il y a 47min</span>
-                </div>
-                <div class="forum-content">Quelqu'un a testé le scan photo sur un plat en sauce ? Curieuse de voir si l'estimation des lipides reste fiable.</div>
-                <div class="forum-footer">
-                    <span class="forum-action">▲ 6</span>
-                    <span class="forum-action">💬 1 réponse</span>
-                </div>
-            </div>
-
-            <div class="forum-post">
-                <div class="forum-header">
-                    <span class="forum-author">@Momo_Endurance</span>
-                    <span class="forum-time">Il y a 2h</span>
-                </div>
-                <div class="forum-content">HRV en hausse constante depuis que je surveille ma fenêtre anabolique. La courbe glycémique aide à comprendre pourquoi certains repas plombent le sommeil.</div>
-                <div class="forum-footer">
-                    <span class="forum-action">▲ 22</span>
-                    <span class="forum-action">💬 5 réponses</span>
-                </div>
-            </div>
-
-            <div class="forum-input-row">
-                <input type="text" class="input-text" placeholder="Partager une astuce ou une stat...">
-                <button class="forum-send-btn" onclick="alert('Publication envoyée à la communauté !')">Envoyer</button>
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-label">Application</div>
-            <div class="raw-data-list">
-                <div class="raw-item"><span>Version</span><span>1.4.2</span></div>
-                <div class="raw-item"><span>Dernière synchronisation</span><span>Il y a 2min</span></div>
-                <div class="raw-item"><span>Stockage local utilisé</span><span>18.2 MB</span></div>
-                <div class="raw-item"><span>Membre depuis</span><span>Mars 2025</span></div>
-            </div>
-        </div>
-
-        <button class="logout-btn" onclick="alert('Déconnexion...')">Se déconnecter</button>
-
-        <div class="legal-footer">
-            <p>Fuel Engine © 2026 — Toutes données de santé stockées localement.<br>
-            <a href="#">Confidentialité</a> · <a href="#">Conditions d'utilisation</a> · <a href="#">Licences</a></p>
-        </div>
-
-    </div>
-
-    <!-- ================================================================
-         NAVIGATION BASSE UNIQUE — pilote les 4 vues via data-view
-    ================================================================= -->
-    <nav>
-        <div class="nav-link active" data-view="accueil">Accueil</div>
-        <div class="nav-link" data-view="sante">Santé</div>
-        <div class="nav-link" data-view="coach">Coach IA</div>
-        <div class="nav-link" data-view="profil">Profil</div>
-    </nav>
 
     <script>
-        /* ============================================================
-           NAVIGATION SPA : une seule fonction pilote les 4 vues
-        ============================================================ */
-        function switchView(viewId) {
-            document.querySelectorAll('.view-section').forEach(function (section) {
-                section.classList.remove('active');
-            });
-            document.getElementById('view-' + viewId).classList.add('active');
-
-            document.querySelectorAll('.nav-link').forEach(function (link) {
-                link.classList.toggle('active', link.dataset.view === viewId);
-            });
-
-            window.scrollTo(0, 0);
-        }
-
-        document.querySelectorAll('.nav-link').forEach(function (link) {
-            link.addEventListener('click', function () {
-                switchView(link.dataset.view);
-            });
-        });
-
-        /* ============================================================
-           PAGE COACH IA : aperçu de la photo scannée
-        ============================================================ */
-        document.getElementById('camera-input').addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (uploadEvent) {
-                    const preview = document.getElementById('image-preview');
-                    preview.src = uploadEvent.target.result;
-                    preview.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        /* ============================================================
-           PAGE COACH IA : déclenchement de la simulation d'impact
-           (le bloc IA réel — photo + commentaire -> prédiction de la
-           courbe glycémique — sera branché ici)
-        ============================================================ */
-        function runSimulation() {
-            const btn = document.getElementById('simulate-btn');
-            const result = document.getElementById('impact-result');
-
-            btn.classList.add('loading');
-            btn.textContent = 'Analyse en cours...';
-            btn.disabled = true;
-
+        // Masque le loader une fois le contenu prêt
+        window.addEventListener('load', function () {
             setTimeout(function () {
-                btn.classList.remove('loading');
-                btn.textContent = 'Relancer la simulation';
-                btn.disabled = false;
-                result.classList.add('visible');
-            }, 1200);
-        }
+                document.getElementById('loader-overlay').classList.add('hidden');
+            }, 900);
+        });
     </script>
 </body>
 </html>
