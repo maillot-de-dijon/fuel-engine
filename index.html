@@ -55,7 +55,7 @@
 
         .top-bar {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             padding: 16px 20px 0 20px;
             flex-shrink: 0;
@@ -74,6 +74,21 @@
             gap: 8px;
         }
         .date-pill span { color: var(--color-accent); }
+
+        /* Profil (haut gauche) + mode Journée Libre / streak (haut droit) */
+        .profile-avatar-mini {
+            width: 36px; height: 36px; border-radius: 50%;
+            background-color: var(--card-bg); border: 1px solid var(--border-color);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 800; color: var(--color-accent); cursor: pointer;
+        }
+        .freeday-toggle {
+            display: flex; align-items: center; gap: 6px;
+            background-color: var(--card-bg); border: 1px solid var(--border-color);
+            padding: 7px 12px; border-radius: 20px; font-size: 10px; font-weight: 700;
+            color: var(--text-secondary); cursor: pointer; letter-spacing: 0.5px;
+        }
+        .freeday-toggle.active { color: var(--color-accent); border-color: var(--color-accent); }
 
         .screen-content {
             flex: 1;
@@ -122,6 +137,13 @@
             color: var(--text-secondary); font-weight: 700; margin-bottom: 4px;
         }
         .score-subcaption { text-align: center; font-size: 11px; color: var(--text-secondary); font-weight: 600; margin-bottom: 16px; }
+        .sensor-note {
+            text-align: center; font-size: 10px; color: var(--text-secondary); font-style: italic;
+            line-height: 1.4; padding: 0 10px; margin-bottom: 16px;
+        }
+        .gentle-note {
+            font-size: 10px; color: var(--text-secondary); font-style: italic; margin-top: 8px; line-height: 1.4;
+        }
 
         .card-hero {
             background-color: var(--card-bg); border: 1px solid var(--border-color);
@@ -162,8 +184,8 @@
         ============================================================ */
         .macro-rings-row { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
         .macro-ring-item {
-            flex: 1; background-color: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 16px; padding: 14px 6px; display: flex; flex-direction: column; align-items: center;
+            flex: 1; background-color: transparent; border: none;
+            border-radius: 16px; padding: 6px 4px 0 4px; display: flex; flex-direction: column; align-items: center;
         }
         .macro-ring-wrap { position: relative; width: 62px; height: 62px; margin-bottom: 8px; }
         .macro-ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
@@ -184,10 +206,25 @@
         }
         .btn-scanner.compact { padding: 14px; font-size: 11px; margin-bottom: 0; margin-top: 8px; }
         .btn-scanner:disabled { background-color: var(--border-color); color: var(--text-secondary); cursor: default; }
+        .btn-ghost {
+            background: transparent; color: var(--text-primary); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 12px; width: 100%; text-align: center; font-size: 11px;
+            font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; margin-top: 8px;
+        }
+        .btn-ghost:active { border-color: var(--color-accent); color: var(--color-accent); }
         .logout-btn {
             background: none; border: none; width: 100%; padding: 12px; font-size: 11px; font-weight: 700;
             letter-spacing: 1px; text-transform: uppercase; color: var(--color-warning); cursor: pointer;
         }
+
+        /* Assistant Chat IA — bouton flottant, disponible sur toutes les vues */
+        .chat-fab {
+            position: absolute; right: 20px; bottom: 96px; width: 52px; height: 52px;
+            border-radius: 50%; background-color: var(--color-accent); border: none;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 6px 16px rgba(118, 255, 3, 0.35); cursor: pointer; z-index: 200;
+        }
+        .chat-fab svg { width: 24px; height: 24px; stroke: #000; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
         /* ============================================================
            8. PAGE SANTÉ — spécifique
@@ -228,6 +265,23 @@
             margin-bottom: 12px; resize: none; height: 70px; font-family: inherit;
         }
         .input-comment::placeholder { color: #5A5A5A; }
+
+        /* Correction rapide post-scan : reconnaissance d'habitude + ajustements fluides */
+        .correction-card { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color); }
+        .correction-card.visible { display: block; }
+        .habit-check { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
+        .habit-question { font-size: 12px; color: var(--text-primary); font-weight: 600; flex: 1; }
+        .habit-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .btn-chip {
+            background-color: var(--color-accent); color: #000; border: none; border-radius: 8px;
+            padding: 6px 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; cursor: pointer;
+        }
+        .btn-chip.ghost { background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); }
+        .slider-group { margin-bottom: 14px; }
+        .slider-group:last-child { margin-bottom: 0; }
+        .slider-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); font-weight: 600; margin-bottom: 6px; }
+        .slider-label span:last-child { color: var(--text-primary); font-weight: 700; }
+        .slider { width: 100%; accent-color: var(--color-accent); height: 4px; }
 
         .impact-result { display: none; margin-top: 16px; }
         .impact-result.visible { display: block; }
@@ -342,7 +396,10 @@
         <div class="app-screen">
 
             <div class="top-bar">
-                <div class="date-pill">AUJOURD'HUI <span>●</span></div>
+                <div class="profile-avatar-mini">LT</div>
+                <div class="freeday-toggle" id="freeday-toggle" onclick="toggleFreeDay()">
+                    <span id="freeday-icon">🔥</span><span id="freeday-label">12 jours</span>
+                </div>
             </div>
 
             <div class="screen-content">
@@ -360,10 +417,11 @@
                         </svg>
                         <div class="energy-score-value">
                             <span class="value">88</span>
-                            <span class="unit">% ÉNERGIE</span>
+                            <span class="unit">% FORME</span>
                         </div>
                     </div>
-                    <div class="score-caption">Score Énergie du Jour</div>
+                    <div class="score-caption">Forme du Jour</div>
+                    <div class="sensor-note">Sommeil pris en compte dès le réveil · Sans capteur — estimation basée sur tes habitudes</div>
 
                     <div class="macro-rings-row" style="margin-top:16px;">
                         <div class="macro-ring-item">
@@ -409,6 +467,17 @@
                         <div class="raw-data-row"><span class="card-label">Eau consommée</span><span class="card-value">2.4 L</span></div>
                         <div class="raw-data-row"><span class="card-label">Repas enregistrés</span><span class="card-value">3 / 4</span></div>
                         <div class="raw-data-row"><span class="card-label">Index glycémique moyen</span><span class="card-value">Bas</span></div>
+                        <div class="gentle-note">Repas du soir non renseigné — estimation douce appliquée à partir de tes habitudes</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title-row">
+                            <div class="card-title">Frigo Virtuel & Courses</div>
+                            <div class="card-tag">3 bientôt épuisés</div>
+                        </div>
+                        <div class="raw-data-row"><span class="card-label">Produits scannés cette semaine</span><span class="card-value">14</span></div>
+                        <div class="raw-data-row"><span class="card-label">Stock estimé suffisant pour</span><span class="card-value">2 jours</span></div>
+                        <button class="btn-ghost" onclick="alert('Liste de courses générée à partir de ton frigo virtuel et de ta consommation.')">📋 Voir la liste de courses intelligente</button>
                     </div>
 
                 </div>
@@ -523,6 +592,26 @@
                         </div>
 
                         <textarea class="input-comment" id="ai-comment" placeholder="Ajoute un contexte pour l'IA (ex: 'Pris juste après une séance lourde de jambes, moitié de sauce')..."></textarea>
+
+                        <div class="correction-card" id="correction-card">
+                            <div class="habit-check">
+                                <span class="habit-question">C'est ton bol habituel du midi ?</span>
+                                <div class="habit-actions">
+                                    <button class="btn-chip" onclick="applyHabit(true)">Oui</button>
+                                    <button class="btn-chip ghost" onclick="applyHabit(false)">Non</button>
+                                </div>
+                            </div>
+                            <div class="slider-group">
+                                <div class="slider-label"><span>Portion</span><span id="portion-value">100%</span></div>
+                                <input type="range" class="slider" min="50" max="150" value="100" step="10"
+                                       oninput="document.getElementById('portion-value').textContent = this.value + '%'">
+                            </div>
+                            <div class="slider-group">
+                                <div class="slider-label"><span>Sauce / matières grasses ajoutées</span><span id="sauce-value">Légère</span></div>
+                                <input type="range" class="slider" min="0" max="3" value="1" step="1"
+                                       oninput="const l=['Aucune','Légère','Modérée','Généreuse']; document.getElementById('sauce-value').textContent = l[this.value]">
+                            </div>
+                        </div>
 
                         <button class="btn-scanner compact" id="simulate-btn" onclick="runSimulation()">Lancer la simulation d'impact</button>
 
@@ -652,6 +741,10 @@
 
             </div>
 
+            <button class="chat-fab" onclick="alert('Ouverture de l\'assistant IA — nutrition, courses, récupération...')" aria-label="Assistant IA">
+                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </button>
+
             <!-- ========================================================
                  NAVIGATION BASSE UNIQUE — pilote les 4 vues via data-view
             ========================================================= -->
@@ -710,6 +803,23 @@
         });
 
         /* ============================================================
+           MODE JOURNÉE LIBRE — n'interrompt pas le streak (zéro pression)
+        ============================================================ */
+        function toggleFreeDay() {
+            const toggle = document.getElementById('freeday-toggle');
+            const icon = document.getElementById('freeday-icon');
+            const label = document.getElementById('freeday-label');
+            const active = toggle.classList.toggle('active');
+            if (active) {
+                icon.textContent = '🌿';
+                label.textContent = 'Journée libre';
+            } else {
+                icon.textContent = '🔥';
+                label.textContent = '12 jours';
+            }
+        }
+
+        /* ============================================================
            PAGE COACH IA : aperçu de la photo scannée
         ============================================================ */
         document.getElementById('camera-input').addEventListener('change', function (e) {
@@ -720,10 +830,21 @@
                     const preview = document.getElementById('image-preview');
                     preview.src = uploadEvent.target.result;
                     preview.style.display = 'block';
+                    document.getElementById('correction-card').classList.add('visible');
                 };
                 reader.readAsDataURL(file);
             }
         });
+
+        /* ============================================================
+           PAGE COACH IA : reconnaissance d'habitude — évite de tout
+           resaisir quand c'est un repas déjà connu
+        ============================================================ */
+        function applyHabit(isUsual) {
+            if (isUsual) {
+                alert('Repas identifié comme habituel — mêmes valeurs nutritionnelles réutilisées, pas besoin de tout resaisir.');
+            }
+        }
 
         /* ============================================================
            PAGE COACH IA : déclenchement de la simulation d'impact
