@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fuel Engine - Accueil</title>
+    <title>Fuel Engine</title>
     <style>
         /* ============================================================
-           NOUVELLE DIRECTION ARTISTIQUE — palette
+           1. VARIABLES — nouvelle Direction Artistique
         ============================================================ */
         :root {
             --bg-app: #000000;
@@ -15,6 +15,10 @@
             --color-accent: #76FF03;
             --card-bg: #212121;
             --border-color: #333;
+            /* La palette validée ne définit pas de couleur de vigilance/négative,
+               nécessaire pour les tendances en baisse et les badges "à ajuster".
+               Ajout minimal, à cet usage sémantique uniquement. */
+            --color-warning: #FF5252;
         }
 
         * {
@@ -26,7 +30,7 @@
         }
 
         /* ============================================================
-           STRUCTURE & CENTRAGE RIGOUREUX
+           2. STRUCTURE & CENTRAGE RIGOUREUX (partagé par les 4 vues)
         ============================================================ */
         body, #app-root {
             background-color: var(--bg-app);
@@ -39,7 +43,7 @@
             margin: 0;
         }
 
-        .accueil-screen {
+        .app-screen {
             width: 100%;
             max-width: 430px;
             height: 100%;
@@ -49,12 +53,12 @@
             position: relative;
         }
 
-        /* Barre du haut : conservée sobre, alignée sur la nouvelle palette */
         .top-bar {
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 16px 20px 0 20px;
+            flex-shrink: 0;
         }
         .date-pill {
             background-color: var(--card-bg);
@@ -71,7 +75,6 @@
         }
         .date-pill span { color: var(--color-accent); }
 
-        /* Zone de contenu scrollable sous le score */
         .screen-content {
             flex: 1;
             overflow-y: auto;
@@ -79,7 +82,17 @@
         }
 
         /* ============================================================
-           ENERGY SCORE — anneau de progression parfaitement centré
+           3. GESTION DES VUES (SPA)
+        ============================================================ */
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================================
+           4. HERO (Energy Score / Récupération / Timing / Compte)
         ============================================================ */
         .score-display-wrapper {
             position: relative;
@@ -90,274 +103,229 @@
             justify-content: center;
             align-items: center;
         }
-
-        .score-display-wrapper svg {
-            width: 100%;
-            height: 100%;
-            transform: rotate(-90deg);
-        }
-
-        .progress-ring-track {
-            fill: none;
-            stroke: var(--card-bg);
-            stroke-width: 12;
-        }
-
+        .score-display-wrapper.compact { width: 180px; height: 180px; margin: 32px auto 8px auto; }
+        .score-display-wrapper svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+        .progress-ring-track { fill: none; stroke: var(--card-bg); stroke-width: 12; }
         .progress-ring-circle {
-            fill: none;
-            stroke: var(--color-accent);
-            stroke-width: 12;
-            stroke-linecap: round;
-            transition: stroke-dashoffset 0.5s ease;
+            fill: none; stroke: var(--color-accent); stroke-width: 12;
+            stroke-linecap: round; transition: stroke-dashoffset 0.5s ease;
         }
-
         .energy-score-value {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;
         }
-        .energy-score-value .value {
-            font-size: 64px;
-            font-weight: 800;
-            color: var(--color-accent);
-            line-height: 1;
-        }
-        .energy-score-value .unit {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--color-accent);
-            margin-top: 2px;
-        }
+        .energy-score-value .value { font-size: 64px; font-weight: 800; color: var(--color-accent); line-height: 1; }
+        .energy-score-value.compact .value { font-size: 52px; }
+        .energy-score-value .unit { font-size: 14px; font-weight: 700; color: var(--color-accent); margin-top: 2px; }
         .score-caption {
-            text-align: center;
-            font-size: 10px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            font-weight: 700;
-            margin-top: -24px;
-            margin-bottom: 8px;
+            text-align: center; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+            color: var(--text-secondary); font-weight: 700; margin-bottom: 4px;
+        }
+        .score-subcaption { text-align: center; font-size: 11px; color: var(--text-secondary); font-weight: 600; margin-bottom: 16px; }
+
+        .card-hero {
+            background-color: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 24px; text-align: center; margin: 16px 0;
+        }
+        .hero-title { font-size: 10px; letter-spacing: 2px; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+        .hero-value { font-size: 30px; font-weight: 800; color: var(--color-accent); letter-spacing: -0.5px; }
+        .hero-value.static { font-size: 24px; color: var(--text-primary); margin-bottom: 4px; }
+        .hero-subtext { font-size: 11px; color: var(--text-secondary); margin-top: 6px; font-weight: 600; }
+        .hero-subtext.accent { color: var(--color-accent); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        .profile-avatar {
+            width: 52px; height: 52px; border-radius: 50%; background-color: var(--bg-app);
+            border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 800; color: var(--color-accent); margin: 0 auto 12px auto;
         }
 
         /* ============================================================
-           CARDS — données brutes
+           5. CARDS GÉNÉRIQUES
         ============================================================ */
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            margin-bottom: 16px;
-            padding: 16px;
-            border: 1px solid var(--border-color);
+        .card { background-color: var(--card-bg); border-radius: 16px; margin-bottom: 16px; padding: 16px; border: 1px solid var(--border-color); }
+        .card-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .card-title { color: var(--text-primary); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; font-weight: 700; }
+        .card-title-row .card-title { margin-bottom: 0; }
+        .card-tag { font-size: 9px; font-weight: 800; letter-spacing: 1px; color: var(--color-accent); text-transform: uppercase; }
+        .card-sublabel {
+            font-size: 10px; letter-spacing: 1px; color: var(--text-secondary); text-transform: uppercase;
+            margin: 4px 0 10px 0; font-weight: 700; padding-top: 10px; border-top: 1px solid var(--border-color);
         }
-
-        /* ============================================================
-           ANNEAUX DE MACROS — 3 anneaux circulaires côte à côte,
-           juste sous l'Energy Score (structure Whoop)
-        ============================================================ */
-        .macro-rings-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .macro-ring-item {
-            flex: 1;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 14px 6px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .macro-ring-wrap {
-            position: relative;
-            width: 62px;
-            height: 62px;
-            margin-bottom: 8px;
-        }
-
-        .macro-ring-wrap svg {
-            width: 100%;
-            height: 100%;
-            transform: rotate(-90deg);
-        }
-
-        .macro-ring-track {
-            fill: none;
-            stroke: var(--border-color);
-            stroke-width: 6;
-        }
-
-        .macro-ring-circle {
-            fill: none;
-            stroke: var(--color-accent);
-            stroke-width: 6;
-            stroke-linecap: round;
-            transition: stroke-dashoffset 0.5s ease;
-        }
-
-        .macro-ring-value {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 800;
-            color: var(--text-primary);
-        }
-
-        .macro-ring-title {
-            font-size: 9px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .macro-ring-target {
-            font-size: 9px;
-            color: var(--text-secondary);
-            font-weight: 600;
-            margin-top: 2px;
-        }
-
-        .card-title {
-            color: var(--text-primary);
-            font-size: 10px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .card-value {
-            color: var(--text-primary);
-            font-size: 15px;
-            font-weight: 800;
-        }
-
-        .card-label {
-            color: var(--text-secondary);
-            font-size: 9px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        /* Card standard (bloc "Données brutes") */
-        .card-full { margin-top: 16px; }
-        .card-full .card-title {
-            margin-bottom: 12px;
-        }
-        .raw-data-row {
-            display: flex; justify-content: space-between;
-            padding: 8px 0; border-bottom: 1px solid var(--border-color);
-        }
+        .card-label { color: var(--text-secondary); }
+        .card-value { color: var(--text-primary); font-weight: 600; }
+        .raw-data-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color); }
         .raw-data-row:last-child { border-bottom: none; }
-        .raw-data-row .card-label { color: var(--text-secondary); font-size: 12px; text-transform: none; letter-spacing: 0; font-weight: 500; }
+        .raw-data-row .card-label { font-size: 12px; }
         .raw-data-row .card-value { font-size: 13px; }
 
         /* ============================================================
-           BOUTON SCANNER
+           6. ANNEAUX SECONDAIRES (macros / HRV / sommeil / FC repos)
+        ============================================================ */
+        .macro-rings-row { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
+        .macro-ring-item {
+            flex: 1; background-color: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 14px 6px; display: flex; flex-direction: column; align-items: center;
+        }
+        .macro-ring-wrap { position: relative; width: 62px; height: 62px; margin-bottom: 8px; }
+        .macro-ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+        .macro-ring-track { fill: none; stroke: var(--border-color); stroke-width: 6; }
+        .macro-ring-circle { fill: none; stroke: var(--color-accent); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
+        .macro-ring-value { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: var(--text-primary); }
+        .macro-ring-title { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; color: var(--text-primary); }
+        .macro-ring-target { font-size: 9px; color: var(--text-secondary); font-weight: 600; margin-top: 2px; }
+
+        /* ============================================================
+           7. BOUTONS
         ============================================================ */
         .btn-scanner {
-            background-color: var(--text-primary);
-            color: var(--bg-app);
-            font-weight: bold;
-            text-transform: uppercase;
-            border-radius: 12px;
-            padding: 16px;
-            width: 100%;
-            text-align: center;
-            border: none;
-            font-size: 12px;
-            letter-spacing: 1.5px;
-            cursor: pointer;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            background-color: var(--text-primary); color: var(--bg-app); font-weight: bold;
+            text-transform: uppercase; border-radius: 12px; padding: 16px; width: 100%;
+            text-align: center; border: none; font-size: 12px; letter-spacing: 1.5px;
+            cursor: pointer; display: block; margin-bottom: 16px;
+        }
+        .btn-scanner.compact { padding: 14px; font-size: 11px; margin-bottom: 0; margin-top: 8px; }
+        .btn-scanner:disabled { background-color: var(--border-color); color: var(--text-secondary); cursor: default; }
+        .logout-btn {
+            background: none; border: none; width: 100%; padding: 12px; font-size: 11px; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase; color: var(--color-warning); cursor: pointer;
         }
 
         /* ============================================================
-           NAVIGATION BASSE
+           8. PAGE SANTÉ — spécifique
+        ============================================================ */
+        .sleep-bar { display: flex; width: 100%; height: 10px; border-radius: 6px; overflow: hidden; margin-bottom: 12px; }
+        .sleep-seg-deep { background-color: rgba(118, 255, 3, 0.35); }
+        .sleep-seg-light { background-color: var(--border-color); }
+        .sleep-seg-rem { background-color: var(--color-accent); }
+        .sleep-legend { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-secondary); font-weight: 600; }
+        .sleep-legend-item { display: flex; align-items: center; gap: 5px; }
+        .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
+        .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+        .metric-row:last-child { border-bottom: none; }
+        .metric-label { font-size: 13px; color: var(--text-secondary); }
+        .metric-value-wrap { display: flex; align-items: center; gap: 6px; }
+        .metric-value { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+        .trend-up { color: var(--color-accent); font-size: 11px; font-weight: 700; }
+        .trend-down { color: var(--color-warning); font-size: 11px; font-weight: 700; }
+        .trend-flat { color: var(--text-secondary); font-size: 11px; font-weight: 700; }
+
+        /* ============================================================
+           9. PAGE COACH IA — spécifique
+        ============================================================ */
+        .camera-wrapper {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 24px 16px; border: 2px dashed var(--border-color); border-radius: 14px;
+            margin-bottom: 12px; text-align: center; background-color: var(--bg-app);
+        }
+        .camera-wrapper label {
+            background-color: var(--color-accent); color: #000; padding: 12px 20px; border-radius: 12px;
+            font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: inline-block;
+        }
+        input[type="file"] { display: none; }
+        .preview-img { width: 100%; max-height: 160px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; display: none; }
+        .input-comment {
+            width: 100%; background-color: var(--bg-app); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 12px; color: var(--text-primary); font-size: 13px; outline: none;
+            margin-bottom: 12px; resize: none; height: 70px; font-family: inherit;
+        }
+        .input-comment::placeholder { color: #5A5A5A; }
+
+        .impact-result { display: none; margin-top: 16px; }
+        .impact-result.visible { display: block; }
+        .impact-chart-wrap { position: relative; width: 100%; margin-bottom: 10px; }
+        .impact-chart-wrap svg { width: 100%; height: auto; display: block; }
+        .chart-grid-line { stroke: var(--border-color); stroke-width: 1; }
+        .chart-now-line { stroke: var(--text-secondary); stroke-width: 1; stroke-dasharray: 3 3; }
+        .chart-curve-fill { fill: url(#curveGradient); }
+        .chart-curve-line { fill: none; stroke: var(--color-accent); stroke-width: 2; }
+        .chart-now-dot { fill: var(--text-primary); }
+        .chart-axis-label { fill: var(--text-secondary); font-size: 8px; font-weight: 700; font-family: -apple-system, sans-serif; }
+        .chart-now-label { fill: var(--text-secondary); font-size: 8px; font-weight: 800; font-family: -apple-system, sans-serif; text-transform: uppercase; }
+        .impact-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px; }
+        .impact-stat { background-color: var(--bg-app); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 6px; text-align: center; }
+        .impact-stat-value { font-size: 15px; font-weight: 800; color: var(--text-primary); }
+        .impact-stat-label { font-size: 8px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin-top: 3px; }
+        .verdict-banner {
+            display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px;
+            margin-top: 10px; background-color: rgba(118, 255, 3, 0.1);
+        }
+        .verdict-banner.warning { background-color: rgba(255, 82, 82, 0.1); }
+        .verdict-icon { font-size: 16px; }
+        .verdict-text { font-size: 12px; font-weight: 600; color: var(--text-primary); line-height: 1.4; }
+        .verdict-text b { color: var(--color-accent); }
+        .verdict-banner.warning .verdict-text b { color: var(--color-warning); }
+        .timing-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+        .timing-row:last-child { border-bottom: none; }
+        .timing-time { font-size: 12px; color: var(--text-secondary); font-weight: 700; width: 50px; flex-shrink: 0; }
+        .timing-desc { font-size: 13px; color: var(--text-primary); flex-grow: 1; padding-right: 8px; }
+        .timing-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; flex-shrink: 0; }
+        .badge-optimal { background-color: rgba(118, 255, 3, 0.15); color: var(--color-accent); }
+        .badge-warning { background-color: rgba(255, 82, 82, 0.15); color: var(--color-warning); }
+
+        /* ============================================================
+           10. PAGE PROFIL — spécifique
+        ============================================================ */
+        .input-group { margin-bottom: 12px; }
+        .input-group:last-child { margin-bottom: 0; }
+        .input-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; display: block; font-weight: 600; }
+        .input-text {
+            width: 100%; background-color: var(--bg-app); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 12px; color: var(--text-primary); font-size: 14px; outline: none; font-family: inherit;
+        }
+        .input-text:focus { border-color: var(--color-accent); }
+        .input-row { display: flex; gap: 10px; }
+        .input-row .input-group { flex: 1; }
+        .select-goal {
+            width: 100%; background-color: var(--bg-app); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 12px; color: var(--text-primary); font-size: 14px; outline: none;
+            font-family: inherit; appearance: none; -webkit-appearance: none;
+        }
+        .forum-post { background-color: var(--bg-app); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; }
+        .forum-post:last-child { margin-bottom: 0; }
+        .forum-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .forum-author { font-size: 12px; font-weight: 700; color: var(--text-primary); }
+        .forum-time { font-size: 10px; color: var(--text-secondary); }
+        .forum-content { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+        .forum-content b { color: var(--text-primary); }
+        .forum-footer { display: flex; align-items: center; gap: 14px; margin-top: 8px; }
+        .forum-action { font-size: 10px; color: var(--text-secondary); font-weight: 700; display: flex; align-items: center; gap: 4px; cursor: pointer; }
+        .forum-input-row { display: flex; gap: 8px; margin-top: 12px; }
+        .forum-input-row .input-text { flex-grow: 1; }
+        .forum-send-btn {
+            background-color: var(--color-accent); color: #000; border: none; border-radius: 12px;
+            padding: 0 16px; font-size: 11px; font-weight: 800; text-transform: uppercase; cursor: pointer;
+        }
+        .legal-footer { text-align: center; padding: 16px 8px 4px 8px; }
+        .legal-footer p { font-size: 10px; color: #5A5A5A; line-height: 1.6; }
+        .legal-footer a { color: var(--text-secondary); text-decoration: underline; }
+
+        /* ============================================================
+           11. NAVIGATION BASSE UNIQUE
         ============================================================ */
         .bottom-nav {
-            background-color: var(--bg-app);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 14px 0 20px 0;
-            flex-shrink: 0;
+            background-color: var(--bg-app); border-top: 1px solid var(--border-color);
+            display: flex; justify-content: space-around; align-items: center; padding: 14px 0 20px 0; flex-shrink: 0;
         }
-
         .nav-icon {
-            color: var(--text-secondary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-size: 9px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-weight: 700;
-            cursor: pointer;
+            color: var(--text-secondary); display: flex; flex-direction: column; align-items: center;
+            gap: 4px; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; cursor: pointer;
         }
-        .nav-icon svg {
-            width: 20px; height: 20px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
+        .nav-icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .nav-icon.active { color: var(--color-accent); }
 
         /* ============================================================
-           LOADER — splash de chargement, parfaitement centré
+           12. LOADER
         ============================================================ */
         .loader-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-app);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-app);
+            z-index: 9999; display: flex; align-items: center; justify-content: center;
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
-        .loader-overlay.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
+        .loader-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         .loader-spinner {
-            border: 4px solid var(--card-bg);
-            border-top: 4px solid var(--color-accent);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            border: 4px solid var(--card-bg); border-top: 4px solid var(--color-accent); border-radius: 50%;
+            width: 40px; height: 40px; animation: spin 1s linear infinite;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
         }
-
         @keyframes spin {
             0% { transform: translate(-50%, -50%) rotate(0deg); }
             100% { transform: translate(-50%, -50%) rotate(360deg); }
@@ -366,13 +334,12 @@
 </head>
 <body>
 
-    <!-- Loader de chargement, centré via top:50%/left:50%/translate -->
     <div class="loader-overlay" id="loader-overlay">
         <div class="loader-spinner"></div>
     </div>
 
     <div id="app-root">
-        <div class="accueil-screen">
+        <div class="app-screen">
 
             <div class="top-bar">
                 <div class="date-pill">AUJOURD'HUI <span>●</span></div>
@@ -380,97 +347,328 @@
 
             <div class="screen-content">
 
-                <!-- Energy Score : anneau de progression rigoureusement centré -->
-                <div class="score-display-wrapper">
-                    <svg viewBox="0 0 200 200">
-                        <circle class="progress-ring-track" cx="100" cy="100" r="88"></circle>
-                        <circle class="progress-ring-circle" cx="100" cy="100" r="88"
-                                stroke-dasharray="552.9"
-                                stroke-dashoffset="66.3"></circle>
-                    </svg>
-                    <div class="energy-score-value">
-                        <span class="value">88</span>
-                        <span class="unit">% ÉNERGIE</span>
+                <!-- ========================================================
+                     VUE 1 : ACCUEIL
+                ========================================================= -->
+                <div id="view-accueil" class="view-section active">
+
+                    <div class="score-display-wrapper">
+                        <svg viewBox="0 0 200 200">
+                            <circle class="progress-ring-track" cx="100" cy="100" r="88"></circle>
+                            <circle class="progress-ring-circle" cx="100" cy="100" r="88"
+                                    stroke-dasharray="552.9" stroke-dashoffset="66.3"></circle>
+                        </svg>
+                        <div class="energy-score-value">
+                            <span class="value">88</span>
+                            <span class="unit">% ÉNERGIE</span>
+                        </div>
                     </div>
+                    <div class="score-caption">Score Énergie du Jour</div>
+
+                    <div class="macro-rings-row" style="margin-top:16px;">
+                        <div class="macro-ring-item">
+                            <div class="macro-ring-wrap">
+                                <svg viewBox="0 0 64 64">
+                                    <circle class="macro-ring-track" cx="32" cy="32" r="26"></circle>
+                                    <circle class="macro-ring-circle" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="21.2"></circle>
+                                </svg>
+                                <div class="macro-ring-value">130g</div>
+                            </div>
+                            <div class="macro-ring-title">Protéines</div>
+                            <div class="macro-ring-target">/ 150g</div>
+                        </div>
+                        <div class="macro-ring-item">
+                            <div class="macro-ring-wrap">
+                                <svg viewBox="0 0 64 64">
+                                    <circle class="macro-ring-track" cx="32" cy="32" r="26"></circle>
+                                    <circle class="macro-ring-circle" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="22.9"></circle>
+                                </svg>
+                                <div class="macro-ring-value">190g</div>
+                            </div>
+                            <div class="macro-ring-title">Glucides</div>
+                            <div class="macro-ring-target">/ 220g</div>
+                        </div>
+                        <div class="macro-ring-item">
+                            <div class="macro-ring-wrap">
+                                <svg viewBox="0 0 64 64">
+                                    <circle class="macro-ring-track" cx="32" cy="32" r="26"></circle>
+                                    <circle class="macro-ring-circle" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="34.3"></circle>
+                                </svg>
+                                <div class="macro-ring-value">55g</div>
+                            </div>
+                            <div class="macro-ring-title">Lipides</div>
+                            <div class="macro-ring-target">/ 70g</div>
+                        </div>
+                    </div>
+
+                    <button class="btn-scanner" onclick="alert('Ouverture de l\'appareil photo + bloc commentaire IA')">📷 Scanner un repas</button>
+
+                    <div class="card">
+                        <div class="card-title">Données Brutes & Historique</div>
+                        <div class="raw-data-row"><span class="card-label">Calories totales</span><span class="card-value">2,140 kcal</span></div>
+                        <div class="raw-data-row"><span class="card-label">Eau consommée</span><span class="card-value">2.4 L</span></div>
+                        <div class="raw-data-row"><span class="card-label">Repas enregistrés</span><span class="card-value">3 / 4</span></div>
+                        <div class="raw-data-row"><span class="card-label">Index glycémique moyen</span><span class="card-value">Bas</span></div>
+                    </div>
+
                 </div>
-                <div class="score-caption">Score Énergie du Jour</div>
 
-                <!-- Anneaux de macros : Protides / Glucides / Lipides, côte à côte -->
-                <div class="macro-rings-row">
-                    <div class="macro-ring-item">
-                        <div class="macro-ring-wrap">
-                            <svg viewBox="0 0 64 64">
-                                <circle class="macro-ring-track" cx="32" cy="32" r="26"></circle>
-                                <circle class="macro-ring-circle" cx="32" cy="32" r="26"
-                                        stroke-dasharray="163.4"
-                                        stroke-dashoffset="21.2"></circle>
-                            </svg>
-                            <div class="macro-ring-value">130g</div>
+                <!-- ========================================================
+                     VUE 2 : SANTÉ & RÉCUPÉRATION
+                ========================================================= -->
+                <div id="view-sante" class="view-section">
+
+                    <div class="score-display-wrapper compact">
+                        <svg viewBox="0 0 180 180">
+                            <circle class="progress-ring-track" cx="90" cy="90" r="78"></circle>
+                            <circle class="progress-ring-circle" cx="90" cy="90" r="78" stroke-dasharray="490.1" stroke-dashoffset="117.6"></circle>
+                        </svg>
+                        <div class="energy-score-value compact">
+                            <span class="value">76</span>
+                            <span class="unit">% RÉCUP.</span>
                         </div>
-                        <div class="macro-ring-title">Protéines</div>
-                        <div class="macro-ring-target">/ 150g</div>
+                    </div>
+                    <div class="score-caption">Score de Récupération</div>
+                    <div class="score-subcaption">Corps prêt pour une charge modérée à élevée</div>
+
+                    <div class="macro-rings-row">
+                        <div class="macro-ring-item">
+                            <div class="macro-ring-wrap">
+                                <svg viewBox="0 0 64 64">
+                                    <circle class="macro-ring-track" cx="32" cy="32" r="26"></circle>
+                                    <circle class="macro-ring-circle" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="134"></circle>
+                                </svg>
+                                <div class="macro-ring-value">7h42</div>
+                            </div>
+                            <div class="macro-ring-title">Sommeil</div>
+                            <div class="macro-ring-target">/ 8h00</div>
+                        </div>
+                        <div class="macro-ring-item">
+                            <div class="macro-ring-wrap">
+                                <svg viewBox="0 0 64 64">
+                                    <circle class="macro-ring-track" cx="32" cy="32" r="26"></circle>
+                                    <circle class="macro-ring-circle" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="106.2"></circle>
+                                </svg>
+                                <div class="macro-ring-value">62ms</div>
+                            </div>
+                            <div class="macro-ring-title">HRV</div>
+                            <div class="macro-ring-target">7j: 57ms</div>
+                        </div>
+                        <div class="macro-ring-item">
+                            <div class="macro-ring-wrap">
+                                <svg viewBox="0 0 64 64">
+                                    <circle class="macro-ring-track" cx="32" cy="32" r="26"></circle>
+                                    <circle class="macro-ring-circle" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="73.5"></circle>
+                                </svg>
+                                <div class="macro-ring-value">48bpm</div>
+                            </div>
+                            <div class="macro-ring-title">FC Repos</div>
+                            <div class="macro-ring-target">7j: 50bpm</div>
+                        </div>
                     </div>
 
-                    <div class="macro-ring-item">
-                        <div class="macro-ring-wrap">
-                            <svg viewBox="0 0 64 64">
-                                <circle class="macro-ring-track" cx="32" cy="32" r="26"></circle>
-                                <circle class="macro-ring-circle" cx="32" cy="32" r="26"
-                                        stroke-dasharray="163.4"
-                                        stroke-dashoffset="22.9"></circle>
-                            </svg>
-                            <div class="macro-ring-value">190g</div>
+                    <div class="card">
+                        <div class="card-title">Répartition du Sommeil</div>
+                        <div class="sleep-bar">
+                            <div class="sleep-seg-deep" style="width: 22%;"></div>
+                            <div class="sleep-seg-light" style="width: 56%;"></div>
+                            <div class="sleep-seg-rem" style="width: 22%;"></div>
                         </div>
-                        <div class="macro-ring-title">Glucides</div>
-                        <div class="macro-ring-target">/ 220g</div>
+                        <div class="sleep-legend">
+                            <div class="sleep-legend-item"><span class="legend-dot" style="background-color: rgba(118,255,3,0.35);"></span>Profond 1h42</div>
+                            <div class="sleep-legend-item"><span class="legend-dot" style="background-color: var(--border-color);"></span>Léger 4h20</div>
+                            <div class="sleep-legend-item"><span class="legend-dot" style="background-color: var(--color-accent);"></span>Paradoxal 1h40</div>
+                        </div>
                     </div>
 
-                    <div class="macro-ring-item">
-                        <div class="macro-ring-wrap">
-                            <svg viewBox="0 0 64 64">
-                                <circle class="macro-ring-track" cx="32" cy="32" r="26"></circle>
-                                <circle class="macro-ring-circle" cx="32" cy="32" r="26"
-                                        stroke-dasharray="163.4"
-                                        stroke-dashoffset="34.3"></circle>
-                            </svg>
-                            <div class="macro-ring-value">55g</div>
-                        </div>
-                        <div class="macro-ring-title">Lipides</div>
-                        <div class="macro-ring-target">/ 70g</div>
+                    <div class="card">
+                        <div class="card-title">Tendances (vs moyenne 7j)</div>
+                        <div class="metric-row"><span class="metric-label">Variabilité cardiaque (HRV)</span><div class="metric-value-wrap"><span class="metric-value">62 ms</span><span class="trend-up">▲ 8%</span></div></div>
+                        <div class="metric-row"><span class="metric-label">Fréquence cardiaque au repos</span><div class="metric-value-wrap"><span class="metric-value">48 bpm</span><span class="trend-down">▼ 3%</span></div></div>
+                        <div class="metric-row"><span class="metric-label">Fréquence respiratoire</span><div class="metric-value-wrap"><span class="metric-value">14.2 rpm</span><span class="trend-flat">■ stable</span></div></div>
+                        <div class="metric-row"><span class="metric-label">SpO2 moyen</span><div class="metric-value-wrap"><span class="metric-value">98%</span><span class="trend-flat">■ stable</span></div></div>
                     </div>
+
+                    <div class="card">
+                        <div class="card-title">Données Brutes</div>
+                        <div class="raw-data-row"><span class="card-label">Température cutanée</span><span class="card-value">+0.2°C</span></div>
+                        <div class="raw-data-row"><span class="card-label">Efficacité du sommeil</span><span class="card-value">91%</span></div>
+                        <div class="raw-data-row"><span class="card-label">Réveils nocturnes</span><span class="card-value">2</span></div>
+                        <div class="raw-data-row"><span class="card-label">Charge de la veille</span><span class="card-value">Modérée</span></div>
+                    </div>
+
                 </div>
 
-                <!-- Bouton scanner -->
-                <button class="btn-scanner" style="margin-top:16px;" onclick="alert('Ouverture de l\'appareil photo + bloc commentaire IA')">
-                    📷 Scanner un repas
-                </button>
+                <!-- ========================================================
+                     VUE 3 : COACH IA & SIMULATEUR
+                ========================================================= -->
+                <div id="view-coach" class="view-section">
 
-                <!-- Données brutes -->
-                <div class="card card-full">
-                    <div class="card-title">Données Brutes & Historique</div>
-                    <div class="raw-data-row"><span class="card-label">Calories totales</span><span class="card-value">2,140 kcal</span></div>
-                    <div class="raw-data-row"><span class="card-label">Eau consommée</span><span class="card-value">2.4 L</span></div>
-                    <div class="raw-data-row"><span class="card-label">Repas enregistrés</span><span class="card-value">3 / 4</span></div>
-                    <div class="raw-data-row"><span class="card-label">Index glycémique moyen</span><span class="card-value">Bas</span></div>
+                    <div class="card-hero">
+                        <div class="hero-title">Fenêtre Anabolique & Timing</div>
+                        <div class="hero-value">Optimal (+2h)</div>
+                        <div class="hero-subtext">Pic d'insuline idéal post-effort détecté</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title-row">
+                            <div class="card-title">Simulateur d'Impact Métabolique</div>
+                            <div class="card-tag">IA</div>
+                        </div>
+
+                        <div class="camera-wrapper">
+                            <img id="image-preview" class="preview-img" alt="Aperçu plat">
+                            <label for="camera-input">📸 Scanner le plat</label>
+                            <input type="file" id="camera-input" accept="image/*" capture="environment">
+                        </div>
+
+                        <textarea class="input-comment" id="ai-comment" placeholder="Ajoute un contexte pour l'IA (ex: 'Pris juste après une séance lourde de jambes, moitié de sauce')..."></textarea>
+
+                        <button class="btn-scanner compact" id="simulate-btn" onclick="runSimulation()">Lancer la simulation d'impact</button>
+
+                        <div class="impact-result" id="impact-result">
+                            <div class="impact-chart-wrap">
+                                <svg viewBox="0 0 300 120" preserveAspectRatio="none">
+                                    <defs>
+                                        <linearGradient id="curveGradient" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stop-color="#76FF03" stop-opacity="0.35"/>
+                                            <stop offset="100%" stop-color="#76FF03" stop-opacity="0"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <line class="chart-grid-line" x1="0" y1="30" x2="300" y2="30"></line>
+                                    <line class="chart-grid-line" x1="0" y1="60" x2="300" y2="60"></line>
+                                    <line class="chart-grid-line" x1="0" y1="90" x2="300" y2="90"></line>
+                                    <line class="chart-now-line" x1="15" y1="10" x2="15" y2="105"></line>
+                                    <path class="chart-curve-fill" d="M15,95 C 55,90 75,20 110,15 C 140,11 160,45 190,65 C 220,83 250,88 300,90 L300,110 L15,110 Z"></path>
+                                    <path class="chart-curve-line" d="M15,95 C 55,90 75,20 110,15 C 140,11 160,45 190,65 C 220,83 250,88 300,90"></path>
+                                    <circle class="chart-now-dot" cx="15" cy="95" r="3"></circle>
+                                    <text class="chart-now-label" x="19" y="18">Maintenant</text>
+                                    <text class="chart-axis-label" x="105" y="12">Pic +45min</text>
+                                    <text class="chart-axis-label" x="2" y="118">0h</text>
+                                    <text class="chart-axis-label" x="145" y="118">+1h30</text>
+                                    <text class="chart-axis-label" x="270" y="118">+3h</text>
+                                </svg>
+                            </div>
+                            <div class="impact-summary-grid">
+                                <div class="impact-stat"><div class="impact-stat-value">+45min</div><div class="impact-stat-label">Pic glycémique</div></div>
+                                <div class="impact-stat"><div class="impact-stat-value">Modéré</div><div class="impact-stat-label">Impact insuline</div></div>
+                                <div class="impact-stat"><div class="impact-stat-value">2h50</div><div class="impact-stat-label">Digestion estimée</div></div>
+                            </div>
+                            <div class="verdict-banner">
+                                <span class="verdict-icon">✅</span>
+                                <span class="verdict-text"><b>Favorable</b> — la charge glucidique arrive pile dans ta fenêtre post-effort, le stockage en graisse sera minimal.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Impact sur la Glycémie & Récupération</div>
+                        <div class="timing-row"><span class="timing-time">12:30</span><span class="timing-desc">Déjeuner riche en glucides complexes</span><span class="timing-badge badge-optimal">Favorable</span></div>
+                        <div class="timing-row"><span class="timing-time">16:00</span><span class="timing-desc">Collation pré-entraînement (Glucides rapides)</span><span class="timing-badge badge-optimal">Optimal</span></div>
+                        <div class="timing-row"><span class="timing-time">21:00</span><span class="timing-desc">Dernier repas lourd (Risque de pic nocturne)</span><span class="timing-badge badge-warning">À ajuster</span></div>
+                    </div>
+
+                </div>
+
+                <!-- ========================================================
+                     VUE 4 : PROFIL & COMMUNAUTÉ
+                ========================================================= -->
+                <div id="view-profil" class="view-section">
+
+                    <div class="card-hero">
+                        <div class="profile-avatar">LT</div>
+                        <div class="hero-title">Statut du Compte</div>
+                        <div class="hero-value static">Membre Fondateur</div>
+                        <div class="hero-subtext accent">● Abonnement Actif</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Objectifs</div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label class="input-label">Objectif principal</label>
+                                <select class="select-goal">
+                                    <option>Recomposition corporelle</option>
+                                    <option>Prise de masse</option>
+                                    <option>Perte de gras</option>
+                                    <option>Maintien / Performance</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">Poids cible (kg)</label>
+                                <input type="number" class="input-text" placeholder="78">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Objectif calorique quotidien</label>
+                            <input type="number" class="input-text" placeholder="2 400 kcal">
+                        </div>
+                        <div class="card-sublabel">Clé API Google Gemini (AI Studio)</div>
+                        <div class="input-group">
+                            <input type="password" id="api-key-input" class="input-text" placeholder="Colle ta clé API ici...">
+                        </div>
+                        <button class="btn-scanner compact" onclick="alert('Paramètres enregistrés localement !')">Enregistrer</button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Communauté Fuel Engine</div>
+                        <div class="forum-post">
+                            <div class="forum-header"><span class="forum-author">@Lucas_Fit</span><span class="forum-time">Il y a 12min</span></div>
+                            <div class="forum-content">Score de récupération à <b>91%</b> ce matin après avoir décalé mon dernier repas à 19h au lieu de 21h. Le simulateur avait raison sur l'impact du timing 👀</div>
+                            <div class="forum-footer"><span class="forum-action">▲ 14</span><span class="forum-action">💬 3 réponses</span></div>
+                        </div>
+                        <div class="forum-post">
+                            <div class="forum-header"><span class="forum-author">@Sarah_K</span><span class="forum-time">Il y a 47min</span></div>
+                            <div class="forum-content">Quelqu'un a testé le scan photo sur un plat en sauce ? Curieuse de voir si l'estimation des lipides reste fiable.</div>
+                            <div class="forum-footer"><span class="forum-action">▲ 6</span><span class="forum-action">💬 1 réponse</span></div>
+                        </div>
+                        <div class="forum-post">
+                            <div class="forum-header"><span class="forum-author">@Momo_Endurance</span><span class="forum-time">Il y a 2h</span></div>
+                            <div class="forum-content">HRV en hausse constante depuis que je surveille ma fenêtre anabolique. La courbe glycémique aide à comprendre pourquoi certains repas plombent le sommeil.</div>
+                            <div class="forum-footer"><span class="forum-action">▲ 22</span><span class="forum-action">💬 5 réponses</span></div>
+                        </div>
+                        <div class="forum-input-row">
+                            <input type="text" class="input-text" placeholder="Partager une astuce ou une stat...">
+                            <button class="forum-send-btn" onclick="alert('Publication envoyée à la communauté !')">Envoyer</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Application</div>
+                        <div class="raw-data-row"><span class="card-label">Version</span><span class="card-value">1.4.2</span></div>
+                        <div class="raw-data-row"><span class="card-label">Dernière synchronisation</span><span class="card-value">Il y a 2min</span></div>
+                        <div class="raw-data-row"><span class="card-label">Stockage local utilisé</span><span class="card-value">18.2 MB</span></div>
+                        <div class="raw-data-row"><span class="card-label">Membre depuis</span><span class="card-value">Mars 2025</span></div>
+                    </div>
+
+                    <button class="logout-btn" onclick="alert('Déconnexion...')">Se déconnecter</button>
+
+                    <div class="legal-footer">
+                        <p>Fuel Engine © 2026 — Toutes données de santé stockées localement.<br>
+                        <a href="#">Confidentialité</a> · <a href="#">Conditions d'utilisation</a> · <a href="#">Licences</a></p>
+                    </div>
+
                 </div>
 
             </div>
 
-            <!-- Navigation basse -->
+            <!-- ========================================================
+                 NAVIGATION BASSE UNIQUE — pilote les 4 vues via data-view
+            ========================================================= -->
             <nav class="bottom-nav">
-                <div class="nav-icon active">
+                <div class="nav-icon active" data-view="accueil">
                     <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9"></path><path d="M5 10v10h14V10"></path></svg>
                     Accueil
                 </div>
-                <div class="nav-icon">
+                <div class="nav-icon" data-view="sante">
                     <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"></path></svg>
                     Santé
                 </div>
-                <div class="nav-icon">
+                <div class="nav-icon" data-view="coach">
                     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9 10h.01M15 10h.01M9 15c.83.67 1.87 1 3 1s2.17-.33 3-1"></path></svg>
                     Coach IA
                 </div>
-                <div class="nav-icon">
+                <div class="nav-icon" data-view="profil">
                     <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 4-6 8-6s8 2 8 6"></path></svg>
                     Profil
                 </div>
@@ -480,12 +678,67 @@
     </div>
 
     <script>
-        // Masque le loader une fois le contenu prêt
+        /* ============================================================
+           LOADER — masqué une fois le contenu prêt
+        ============================================================ */
         window.addEventListener('load', function () {
             setTimeout(function () {
                 document.getElementById('loader-overlay').classList.add('hidden');
             }, 900);
         });
+
+        /* ============================================================
+           NAVIGATION SPA : une seule fonction pilote les 4 vues
+        ============================================================ */
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(function (section) {
+                section.classList.remove('active');
+            });
+            document.getElementById('view-' + viewId).classList.add('active');
+
+            document.querySelectorAll('.nav-icon').forEach(function (link) {
+                link.classList.toggle('active', link.dataset.view === viewId);
+            });
+
+            document.querySelector('.screen-content').scrollTop = 0;
+        }
+
+        document.querySelectorAll('.nav-icon').forEach(function (link) {
+            link.addEventListener('click', function () {
+                switchView(link.dataset.view);
+            });
+        });
+
+        /* ============================================================
+           PAGE COACH IA : aperçu de la photo scannée
+        ============================================================ */
+        document.getElementById('camera-input').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (uploadEvent) {
+                    const preview = document.getElementById('image-preview');
+                    preview.src = uploadEvent.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        /* ============================================================
+           PAGE COACH IA : déclenchement de la simulation d'impact
+        ============================================================ */
+        function runSimulation() {
+            const btn = document.getElementById('simulate-btn');
+            const result = document.getElementById('impact-result');
+            btn.textContent = 'Analyse en cours...';
+            btn.disabled = true;
+            setTimeout(function () {
+                btn.textContent = 'Relancer la simulation';
+                btn.disabled = false;
+                result.classList.add('visible');
+            }, 1200);
+        }
     </script>
 </body>
 </html>
